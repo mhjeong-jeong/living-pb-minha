@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎯 호텔수건 PB 실적 대시보드 v1</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--border:#e2e4ea;--text:#1a1d27;--text2:#6b6e7d;--text3:#9a9dad;--accent:#6c5ce7;--green:#00b894;--red:#ff6b6b;--orange:#e6a817;--blue:#3b82f6;--purple:#8b5cf6;--self:#3b82f6;--compA:#e6a817;--compB:#8b5cf6}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:Pretendard,sans-serif;font-size:13px;line-height:1.5}
+.top-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.top-bar .logo{font-size:15px;font-weight:700}
+.top-bar .logo .mission{color:var(--text2);font-weight:500;font-size:11px;margin-left:8px}
+.top-bar .meta{font-size:11px;color:var(--text2)}
+.top-bar .v-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;margin-left:6px}
+.tabs{background:#fff;border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{background:none;border:0;padding:12px 16px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-btn:hover{color:var(--text)}
+.container{padding:24px 28px;max-width:1600px;margin:0 auto}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card h3{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.card .sub{font-size:11px;color:var(--text2);margin-bottom:8px}
+.kpi-card{border-left:4px solid var(--self)}
+.kpi-card.compA{border-left-color:var(--compA)}
+.kpi-card.compB{border-left-color:var(--compB)}
+.kpi-title{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:4px}
+.kpi-label{font-size:12px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.kpi-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--border)}
+.kpi-row:last-child{border-bottom:0}
+.kpi-row .l{font-size:11px;color:var(--text2)}
+.kpi-row .v{font-size:16px;font-weight:700}
+.kpi-row .s{font-size:10px;color:var(--text3);margin-left:4px}
+.chg{font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px}
+.chg.up{background:rgba(0,184,148,.15);color:var(--green)}
+.chg.dn{background:rgba(255,107,107,.15);color:var(--red)}
+.chart-box{position:relative;height:280px}
+.chart-box.sm{height:220px}
+.chart-box.lg{height:340px}
+.btn-group{display:inline-flex;background:#f1f2f6;border-radius:6px;padding:2px;margin-left:8px}
+.btn-group button{background:none;border:0;padding:4px 10px;cursor:pointer;font-size:11px;color:var(--text2);border-radius:4px;font-family:inherit}
+.btn-group button.active{background:#fff;color:var(--text);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.controls{display:flex;align-items:center;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.controls .label{font-size:11px;color:var(--text2)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+th{background:#f9fafb;font-weight:600;color:var(--text2);font-size:11px}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+td.self{color:var(--self);font-weight:700}
+td.compA{color:var(--compA)}
+td.compB{color:var(--compB)}
+.product-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.product-header .emoji{font-size:24px}
+.product-header .name{flex:1}
+.product-header .name .t{font-size:14px;font-weight:700}
+.product-header .name .s{font-size:11px;color:var(--text2);margin-top:2px}
+.product-header .price{font-size:13px;color:var(--text);font-weight:600}
+.note{background:#fff8e1;border-left:3px solid #f59e0b;padding:10px 12px;border-radius:4px;font-size:12px;color:#92400e;margin-bottom:16px}
+.formula{background:#eef2ff;border:1px dashed #a5b4fc;color:#4338ca;padding:8px 12px;border-radius:6px;font-size:11px;margin-bottom:16px;font-family:monospace}
+.footer{margin-top:32px;padding:16px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text3);text-align:center}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="logo">🎯 호텔수건 PB 대시보드 <span class="v-badge">v1</span> <span class="mission">Layer refine 호텔수건 · 단독 경쟁사 2종 비교</span></div>
+  <div class="meta">업데이트: 2026-04-20 · 자동 쿼리 from Athena</div>
+</div>
+<div class="tabs" id="tabs">
+  <button class="tab-btn active" data-t="overview">Overview</button>
+  <button class="tab-btn" data-t="self">🔵 refine 코마사 (자사)</button>
+  <button class="tab-btn" data-t="compA">⚔️ 라다타 (경쟁사 A)</button>
+  <button class="tab-btn" data-t="compB">⚔️ 코튼리빙 (경쟁사 B)</button>
+  <button class="tab-btn" data-t="inflow">🚀 유입 퍼널</button>
+  <button class="tab-btn" data-t="srp">🔍 SRP 점수</button>
+  <button class="tab-btn" data-t="vs">⚔️ 1:1 비교표</button>
+</div>
+<div class="container">
+  <!-- OVERVIEW -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="note">동일 카테고리(생활용품 &gt; 욕실용품 &gt; 수건/타월)의 자사 PB 1종 vs 경쟁사 단독 2종 비교. 지표 산식은 프리즘 표준: <code>CTR = pdpview/impression</code>, <code>CVR(UV) = purchase_user_join / pdpview_user_join</code>. 당일취소 제외, 회원 기준 UV.</div>
+    <div class="grid grid-3" style="margin-bottom:16px" id="kpi-cards"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>📊 일간 GMV — 3상품 (최근 28일)</h3>
+      <div class="controls"><span class="label">스케일</span><div class="btn-group"><button id="sc-lin" class="active" onclick="setScale('linear')">선형</button><button id="sc-log" onclick="setScale('log')">로그</button></div></div>
+      <div class="chart-box lg"><canvas id="ov-gmv"></canvas></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card"><h3>📦 일간 판매수량 (최근 28일)</h3><div class="chart-box"><canvas id="ov-qty"></canvas></div></div>
+      <div class="card"><h3>📈 일간 CTR % (최근 28일, Y 0~8)</h3><div class="chart-box"><canvas id="ov-ctr"></canvas></div></div>
+      <div class="card"><h3>📈 일간 CVR(UV) % (최근 28일, Y 0~12)</h3><div class="chart-box"><canvas id="ov-cvr"></canvas></div></div>
+      <div class="card"><h3>👥 일간 PDP UV (최근 28일)</h3><div class="chart-box"><canvas id="ov-uv"></canvas></div></div>
+    </div>
+  </div>
+  <!-- 상품별 탭 (공통 템플릿) -->
+  <div class="tab-content" id="tab-self"></div>
+  <div class="tab-content" id="tab-compA"></div>
+  <div class="tab-content" id="tab-compB"></div>
+  <!-- 유입 퍼널 -->
+  <div class="tab-content" id="tab-inflow">
+    <div class="note">PDP로 들어오기 직전 경로별 노출·클릭·비중. <strong>검색·카테고리</strong> 비중이 높을수록 자생적, <strong>광고리스트·오늘의딜</strong> 비중이 높으면 내부 프로모션 의존. 최근 7일(2026-04-14 ~ 2026-04-20).</div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>📊 3상품 유입 경로 비중 비교 (100% Stacked)</h3>
+      <div class="sub">각 상품의 PDP 노출 중 경로별 비중. 자사 PB가 유료 경로(광고리스트·오늘의딜)에 얼마나 의존하는지 한눈에 확인.</div>
+      <div class="chart-box lg"><canvas id="in-stack"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>📈 주요 경로 × 3상품 CTR 비교</h3>
+      <div class="sub">같은 경로에서도 상품마다 CTR이 달라지는 걸 확인. 경로별 PDP 진입 매력도 비교.</div>
+      <div class="chart-box"><canvas id="in-ctr"></canvas></div>
+    </div>
+    <div class="grid grid-3">
+      <div class="card"><h3>🔵 refine (자사) 경로 상세</h3><div style="overflow-x:auto"><table id="in-self-tbl"></table></div></div>
+      <div class="card"><h3>⚔️ 라다타 경로 상세</h3><div style="overflow-x:auto"><table id="in-compA-tbl"></table></div></div>
+      <div class="card"><h3>⚔️ 코튼리빙 경로 상세</h3><div style="overflow-x:auto"><table id="in-compB-tbl"></table></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>📋 3상품 × 경로별 노출 수</h3>
+      <div style="overflow-x:auto"><table id="in-matrix"></table></div>
+    </div>
+  </div>
+  <!-- SRP 점수 -->
+  <div class="tab-content" id="tab-srp">
+    <div class="note">SRP(검색결과) 노출 순위·feature 비교. 자사 검색 노출 포지션과 feature 스코어가 경쟁사 대비 어디 위치하는지 확인. 원천: ba_preserved.commerce_product_search_tb (object_section='스토어 검색 결과', object_idx 평균).</div>
+    <div class="grid grid-2">
+      <div class="card"><h3>📊 주요 키워드별 SRP 노출 수 (최근 7일)</h3><div class="sub">검색 키워드에서 각 상품이 얼마나 노출되었는지. 노출 크면 검색 커버리지 高.</div><div class="chart-box"><canvas id="srp-imp"></canvas></div></div>
+      <div class="card"><h3>🎯 주요 키워드별 평균 노출 순위</h3><div class="sub">object_idx 가중평균. 낮을수록 상단 노출 (0=1위).</div><div class="chart-box"><canvas id="srp-rank"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>📋 상품 × 키워드 평균 순위 매트릭스 (최근 7일)</h3>
+      <div class="sub">녹색 TOP 5 · 주황 TOP 15 · 빨강 그 이하 · 회색 노출 없음. 0-indexed(0이 1위).</div>
+      <div style="overflow-x:auto"><table id="srp-matrix"></table></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>🧮 ES Function Score Raw Feature 비교</h3>
+      <div class="sub">SRP 랭킹에 영향을 주는 product feature. 리뷰·스크랩 많을수록, 출시일 오래될수록 랭킹 유리. 자사 PB는 구조적 열세 구간.</div>
+      <div style="overflow-x:auto"><table id="srp-feat"></table></div>
+    </div>
+    <div class="note" style="background:#fef3c7;border-left-color:#d97706;color:#92400e;margin-top:16px">
+      ⚠️ <strong>정통적 <code>selling_score</code> 시계열은 이번 버전에 포함되지 않았어요.</strong> 참고본의 SRP 점수 탭에서 쓰던 <code>selling_score</code>/<code>qc_rank</code> 같은 ES Function Score 내부 feature는 사내 별도 파이프라인/스냅샷에서 관리되는 것으로 보입니다. 다음 iteration에서 정확한 테이블을 확보하면 추가하겠습니다.
+    </div>
+  </div>
+  <!-- 1:1 비교 -->
+  <div class="tab-content" id="tab-vs">
+    <div class="note">최근 30일(2026-03-22 ~ 2026-04-20) 누적 지표로 3상품 1:1 비교. CTR·CVR은 누적 분자/분모 기준 가중평균.</div>
+    <div class="card">
+      <h3>⚔️ 최근 30일 핵심 지표 비교</h3>
+      <div style="overflow-x:auto"><table id="vs-tbl"></table></div>
+    </div>
+    <div class="grid grid-2" style="margin-top:16px">
+      <div class="card"><h3>📊 최근 30일 GMV 합계</h3><div class="chart-box"><canvas id="vs-gmv"></canvas></div></div>
+      <div class="card"><h3>📈 최근 30일 CTR · CVR 비교</h3><div class="chart-box"><canvas id="vs-rate"></canvas></div></div>
+    </div>
+  </div>
+  <div class="footer">데이터 원천: ba_preserved.commerce_daily_user_count_v3 (base='product', paid_type='total') · ba_preserved.commerce_gross_profit_orders (당일취소 제외) · 2026-02-20 ~ 2026-04-20 60일 · Claude/Cowork 자동 생성</div>
+</div>
+<script>
+const DATA = {"meta":{"lastUpdate":"2026-04-20","category":"생활용품 > 욕실용품 > 수건/타월 > 일반세면타월","period":"2026-02-20 ~ 2026-04-20 (60일)"},"products":{"3920046":{"emoji":"🔵","name":"refine / 오래 써도 깨끗한 40수 코마사 호텔수건, 7colors, 5P/10P","shortName":"refine 코마사 호텔수건","brand":"오늘의집 layer","partner":"버킷플레이스","price":25900,"launch":"2026-01-16","review":637,"rating":5.0,"scrap":8735,"role":"self"},"3345606":{"emoji":"⚔️","name":"[오늘의집 단독] 코마사40수200g 스트라이프 호텔수건 타월10장(선물포장)","shortName":"코마사40수 스트라이프 호텔수건","brand":"라다타","partner":"세미콜론식스","price":56900,"launch":"2025-02-06","review":3111,"rating":5.0,"scrap":39385,"role":"compA"},"3185445":{"emoji":"⚔️","name":"[오늘의집 단독] [쿠폰] 체커보드/스트라이프 블랜디드얀 호텔수건 10장","shortName":"블랜디드얀 체커 호텔수건","brand":"코튼리빙","partner":"주식회사 세인코튼","price":41900,"launch":"2024-11-18","review":5231,"rating":5.0,"scrap":71095,"role":"compB"}},"daily":{"3920046":[{"dt":"2026-02-20","gmv":2387700,"qty":63,"imp":186714,"pdp":2263,"purchase":44,"pdp_uv":1080,"buy_uv":44,"imp_uv":89868},{"dt":"2026-02-21","gmv":1029300,"qty":27,"imp":80935,"pdp":1549,"purchase":22,"pdp_uv":754,"buy_uv":22,"imp_uv":28235},{"dt":"2026-02-22","gmv":1075200,"qty":28,"imp":38994,"pdp":1159,"purchase":25,"pdp_uv":514,"buy_uv":25,"imp_uv":7561},{"dt":"2026-02-23","gmv":1684200,"qty":48,"imp":54596,"pdp":1900,"purchase":33,"pdp_uv":898,"buy_uv":33,"imp_uv":10036},{"dt":"2026-02-24","gmv":1846200,"qty":48,"imp":59220,"pdp":1970,"purchase":37,"pdp_uv":923,"buy_uv":37,"imp_uv":11938},{"dt":"2026-02-25","gmv":1320300,"qty":37,"imp":47928,"pdp":1483,"purchase":24,"pdp_uv":649,"buy_uv":24,"imp_uv":8558},{"dt":"2026-02-26","gmv":4608900,"qty":121,"imp":386989,"pdp":6364,"purchase":88,"pdp_uv":3239,"buy_uv":86,"imp_uv":189181},{"dt":"2026-02-27","gmv":1312500,"qty":35,"imp":60314,"pdp":1587,"purchase":30,"pdp_uv":706,"buy_uv":29,"imp_uv":13911},{"dt":"2026-02-28","gmv":1775400,"qty":46,"imp":59191,"pdp":1669,"purchase":34,"pdp_uv":772,"buy_uv":34,"imp_uv":12904},{"dt":"2026-03-01","gmv":1812000,"qty":50,"imp":54841,"pdp":1511,"purchase":36,"pdp_uv":749,"buy_uv":36,"imp_uv":11709},{"dt":"2026-03-02","gmv":2070300,"qty":57,"imp":58468,"pdp":1739,"purchase":43,"pdp_uv":823,"buy_uv":43,"imp_uv":12263},{"dt":"2026-03-03","gmv":2421900,"qty":61,"imp":54428,"pdp":1658,"purchase":45,"pdp_uv":762,"buy_uv":44,"imp_uv":11733},{"dt":"2026-03-04","gmv":1353000,"qty":40,"imp":52749,"pdp":1613,"purchase":31,"pdp_uv":685,"buy_uv":31,"imp_uv":10742},{"dt":"2026-03-05","gmv":1371600,"qty":34,"imp":53049,"pdp":1460,"purchase":27,"pdp_uv":681,"buy_uv":27,"imp_uv":12811},{"dt":"2026-03-06","gmv":4707600,"qty":114,"imp":189286,"pdp":5537,"purchase":84,"pdp_uv":2914,"buy_uv":83,"imp_uv":70498},{"dt":"2026-03-07","gmv":2326200,"qty":58,"imp":64983,"pdp":1832,"purchase":41,"pdp_uv":933,"buy_uv":40,"imp_uv":17285},{"dt":"2026-03-08","gmv":2554200,"qty":68,"imp":68171,"pdp":2150,"purchase":50,"pdp_uv":1140,"buy_uv":50,"imp_uv":18521},{"dt":"2026-03-09","gmv":1550100,"qty":39,"imp":56214,"pdp":1442,"purchase":32,"pdp_uv":667,"buy_uv":32,"imp_uv":15196},{"dt":"2026-03-10","gmv":1667600,"qty":44,"imp":56475,"pdp":1356,"purchase":32,"pdp_uv":606,"buy_uv":32,"imp_uv":14571},{"dt":"2026-03-11","gmv":627600,"qty":14,"imp":47855,"pdp":1276,"purchase":14,"pdp_uv":585,"buy_uv":14,"imp_uv":11281},{"dt":"2026-03-12","gmv":1754100,"qty":39,"imp":49412,"pdp":1220,"purchase":28,"pdp_uv":567,"buy_uv":28,"imp_uv":16980},{"dt":"2026-03-13","gmv":3140600,"qty":74,"imp":135805,"pdp":2328,"purchase":43,"pdp_uv":1170,"buy_uv":43,"imp_uv":66536},{"dt":"2026-03-14","gmv":850200,"qty":18,"imp":49376,"pdp":1140,"purchase":17,"pdp_uv":585,"buy_uv":17,"imp_uv":17689},{"dt":"2026-03-15","gmv":1845100,"qty":49,"imp":53275,"pdp":1348,"purchase":32,"pdp_uv":613,"buy_uv":32,"imp_uv":16771},{"dt":"2026-03-16","gmv":2009300,"qty":47,"imp":55826,"pdp":1414,"purchase":34,"pdp_uv":699,"buy_uv":34,"imp_uv":17150},{"dt":"2026-03-17","gmv":1013400,"qty":26,"imp":48678,"pdp":1088,"purchase":19,"pdp_uv":552,"buy_uv":19,"imp_uv":14286},{"dt":"2026-03-18","gmv":1589900,"qty":41,"imp":47046,"pdp":1398,"purchase":32,"pdp_uv":667,"buy_uv":32,"imp_uv":10859},{"dt":"2026-03-19","gmv":1482500,"qty":35,"imp":45556,"pdp":1252,"purchase":24,"pdp_uv":583,"buy_uv":24,"imp_uv":11042},{"dt":"2026-03-20","gmv":1833700,"qty":43,"imp":130489,"pdp":2299,"purchase":31,"pdp_uv":1239,"buy_uv":30,"imp_uv":64823},{"dt":"2026-03-21","gmv":1183100,"qty":29,"imp":42746,"pdp":1087,"purchase":24,"pdp_uv":579,"buy_uv":24,"imp_uv":12364},{"dt":"2026-03-22","gmv":1887400,"qty":46,"imp":54429,"pdp":1409,"purchase":30,"pdp_uv":614,"buy_uv":30,"imp_uv":13723},{"dt":"2026-03-23","gmv":504700,"qty":13,"imp":31490,"pdp":989,"purchase":15,"pdp_uv":453,"buy_uv":15,"imp_uv":8124},{"dt":"2026-03-24","gmv":1462300,"qty":37,"imp":28512,"pdp":889,"purchase":25,"pdp_uv":404,"buy_uv":25,"imp_uv":7237},{"dt":"2026-03-25","gmv":955700,"qty":23,"imp":28365,"pdp":883,"purchase":16,"pdp_uv":390,"buy_uv":16,"imp_uv":6608},{"dt":"2026-03-26","gmv":1077600,"qty":24,"imp":25235,"pdp":763,"purchase":19,"pdp_uv":386,"buy_uv":19,"imp_uv":5810},{"dt":"2026-03-27","gmv":2020700,"qty":53,"imp":117122,"pdp":2091,"purchase":34,"pdp_uv":1193,"buy_uv":34,"imp_uv":62787},{"dt":"2026-03-28","gmv":554600,"qty":14,"imp":23291,"pdp":705,"purchase":10,"pdp_uv":370,"buy_uv":10,"imp_uv":6161},{"dt":"2026-03-29","gmv":680300,"qty":17,"imp":27242,"pdp":902,"purchase":15,"pdp_uv":456,"buy_uv":15,"imp_uv":6654},{"dt":"2026-03-30","gmv":1010600,"qty":24,"imp":24469,"pdp":788,"purchase":17,"pdp_uv":406,"buy_uv":17,"imp_uv":5392},{"dt":"2026-03-31","gmv":965200,"qty":28,"imp":22318,"pdp":725,"purchase":17,"pdp_uv":342,"buy_uv":17,"imp_uv":5021},{"dt":"2026-04-01","gmv":704300,"qty":17,"imp":35111,"pdp":1005,"purchase":13,"pdp_uv":479,"buy_uv":13,"imp_uv":7413},{"dt":"2026-04-02","gmv":1234900,"qty":31,"imp":37676,"pdp":1036,"purchase":22,"pdp_uv":467,"buy_uv":22,"imp_uv":8171},{"dt":"2026-04-03","gmv":1290500,"qty":35,"imp":85390,"pdp":1591,"purchase":26,"pdp_uv":852,"buy_uv":25,"imp_uv":41373},{"dt":"2026-04-04","gmv":879900,"qty":21,"imp":36332,"pdp":970,"purchase":16,"pdp_uv":471,"buy_uv":16,"imp_uv":8495},{"dt":"2026-04-05","gmv":1306900,"qty":31,"imp":43636,"pdp":1201,"purchase":21,"pdp_uv":614,"buy_uv":21,"imp_uv":10016},{"dt":"2026-04-06","gmv":1815400,"qty":46,"imp":46491,"pdp":1278,"purchase":28,"pdp_uv":593,"buy_uv":28,"imp_uv":9508},{"dt":"2026-04-07","gmv":454800,"qty":12,"imp":42934,"pdp":1094,"purchase":10,"pdp_uv":615,"buy_uv":10,"imp_uv":9552},{"dt":"2026-04-08","gmv":1584200,"qty":38,"imp":46886,"pdp":1131,"purchase":26,"pdp_uv":578,"buy_uv":26,"imp_uv":10164},{"dt":"2026-04-09","gmv":1059300,"qty":27,"imp":50161,"pdp":1132,"purchase":20,"pdp_uv":563,"buy_uv":20,"imp_uv":10873},{"dt":"2026-04-10","gmv":1871000,"qty":50,"imp":114995,"pdp":1980,"purchase":34,"pdp_uv":1009,"buy_uv":34,"imp_uv":50437},{"dt":"2026-04-11","gmv":859700,"qty":23,"imp":45393,"pdp":997,"purchase":16,"pdp_uv":499,"buy_uv":16,"imp_uv":11265},{"dt":"2026-04-12","gmv":2399700,"qty":63,"imp":62779,"pdp":1502,"purchase":38,"pdp_uv":707,"buy_uv":37,"imp_uv":13336},{"dt":"2026-04-13","gmv":935500,"qty":25,"imp":56874,"pdp":1241,"purchase":19,"pdp_uv":596,"buy_uv":19,"imp_uv":14086},{"dt":"2026-04-14","gmv":1336600,"qty":34,"imp":52577,"pdp":1200,"purchase":23,"pdp_uv":565,"buy_uv":23,"imp_uv":12762},{"dt":"2026-04-15","gmv":933600,"qty":24,"imp":47278,"pdp":1019,"purchase":20,"pdp_uv":529,"buy_uv":20,"imp_uv":11547},{"dt":"2026-04-16","gmv":1362500,"qty":35,"imp":47760,"pdp":1013,"purchase":23,"pdp_uv":496,"buy_uv":23,"imp_uv":11501},{"dt":"2026-04-17","gmv":602600,"qty":14,"imp":44444,"pdp":978,"purchase":11,"pdp_uv":477,"buy_uv":11,"imp_uv":11508},{"dt":"2026-04-18","gmv":2068700,"qty":53,"imp":123007,"pdp":2540,"purchase":47,"pdp_uv":1289,"buy_uv":47,"imp_uv":54121},{"dt":"2026-04-19","gmv":1264600,"qty":34,"imp":79373,"pdp":1531,"purchase":24,"pdp_uv":841,"buy_uv":24,"imp_uv":22949},{"dt":"2026-04-20","gmv":1362500,"qty":35,"imp":59857,"pdp":1324,"purchase":24,"pdp_uv":682,"buy_uv":24,"imp_uv":17895}],"3345606":[{"dt":"2026-02-20","gmv":2968800,"qty":52,"imp":46616,"pdp":1907,"purchase":42,"pdp_uv":768,"buy_uv":41,"imp_uv":8430},{"dt":"2026-02-21","gmv":1593200,"qty":28,"imp":41646,"pdp":1510,"purchase":19,"pdp_uv":693,"buy_uv":19,"imp_uv":7822},{"dt":"2026-02-22","gmv":2845000,"qty":50,"imp":58368,"pdp":2031,"purchase":45,"pdp_uv":903,"buy_uv":45,"imp_uv":9652},{"dt":"2026-02-23","gmv":5511100,"qty":119,"imp":109726,"pdp":3693,"purchase":98,"pdp_uv":1417,"buy_uv":97,"imp_uv":25448},{"dt":"2026-02-24","gmv":4549300,"qty":97,"imp":109771,"pdp":3332,"purchase":80,"pdp_uv":1311,"buy_uv":79,"imp_uv":32565},{"dt":"2026-02-25","gmv":6978100,"qty":149,"imp":77364,"pdp":3047,"purchase":125,"pdp_uv":1089,"buy_uv":121,"imp_uv":18303},{"dt":"2026-02-26","gmv":1922900,"qty":41,"imp":29791,"pdp":1103,"purchase":26,"pdp_uv":447,"buy_uv":26,"imp_uv":8889},{"dt":"2026-02-27","gmv":1922900,"qty":41,"imp":50092,"pdp":1816,"purchase":32,"pdp_uv":718,"buy_uv":32,"imp_uv":11070},{"dt":"2026-02-28","gmv":2391900,"qty":51,"imp":60752,"pdp":1839,"purchase":40,"pdp_uv":813,"buy_uv":40,"imp_uv":16104},{"dt":"2026-03-01","gmv":2907800,"qty":62,"imp":64321,"pdp":2121,"purchase":47,"pdp_uv":913,"buy_uv":47,"imp_uv":14968},{"dt":"2026-03-02","gmv":2298100,"qty":49,"imp":81068,"pdp":2773,"purchase":43,"pdp_uv":1174,"buy_uv":42,"imp_uv":18960},{"dt":"2026-03-03","gmv":1397000,"qty":30,"imp":48678,"pdp":2030,"purchase":28,"pdp_uv":849,"buy_uv":28,"imp_uv":9302},{"dt":"2026-03-04","gmv":3001600,"qty":64,"imp":32340,"pdp":1404,"purchase":48,"pdp_uv":579,"buy_uv":48,"imp_uv":4144},{"dt":"2026-03-05","gmv":3939600,"qty":84,"imp":49011,"pdp":1751,"purchase":64,"pdp_uv":755,"buy_uv":64,"imp_uv":11765},{"dt":"2026-03-06","gmv":2720200,"qty":58,"imp":51129,"pdp":1853,"purchase":47,"pdp_uv":809,"buy_uv":47,"imp_uv":11816},{"dt":"2026-03-07","gmv":3658200,"qty":78,"imp":75857,"pdp":2773,"purchase":60,"pdp_uv":1194,"buy_uv":60,"imp_uv":20193},{"dt":"2026-03-08","gmv":6659800,"qty":142,"imp":69977,"pdp":2609,"purchase":102,"pdp_uv":1041,"buy_uv":101,"imp_uv":14697},{"dt":"2026-03-09","gmv":2322900,"qty":41,"imp":34703,"pdp":1526,"purchase":32,"pdp_uv":713,"buy_uv":32,"imp_uv":6983},{"dt":"2026-03-10","gmv":2125300,"qty":37,"imp":31772,"pdp":1402,"purchase":32,"pdp_uv":621,"buy_uv":31,"imp_uv":5997},{"dt":"2026-03-11","gmv":3129500,"qty":55,"imp":33287,"pdp":1428,"purchase":40,"pdp_uv":584,"buy_uv":40,"imp_uv":5769},{"dt":"2026-03-12","gmv":2714300,"qty":47,"imp":34448,"pdp":1466,"purchase":39,"pdp_uv":599,"buy_uv":37,"imp_uv":5764},{"dt":"2026-03-13","gmv":1840800,"qty":32,"imp":28896,"pdp":1268,"purchase":26,"pdp_uv":552,"buy_uv":26,"imp_uv":5604},{"dt":"2026-03-14","gmv":2276000,"qty":40,"imp":30081,"pdp":1269,"purchase":29,"pdp_uv":582,"buy_uv":27,"imp_uv":6243},{"dt":"2026-03-15","gmv":3015700,"qty":53,"imp":41158,"pdp":1773,"purchase":37,"pdp_uv":732,"buy_uv":37,"imp_uv":6733},{"dt":"2026-03-16","gmv":1850800,"qty":32,"imp":33540,"pdp":1386,"purchase":28,"pdp_uv":615,"buy_uv":27,"imp_uv":6638},{"dt":"2026-03-17","gmv":2105300,"qty":37,"imp":30261,"pdp":1252,"purchase":28,"pdp_uv":589,"buy_uv":28,"imp_uv":6093},{"dt":"2026-03-18","gmv":1251800,"qty":22,"imp":36091,"pdp":1341,"purchase":20,"pdp_uv":612,"buy_uv":20,"imp_uv":7152},{"dt":"2026-03-19","gmv":1877700,"qty":33,"imp":29500,"pdp":1157,"purchase":21,"pdp_uv":519,"buy_uv":21,"imp_uv":5563},{"dt":"2026-03-20","gmv":1081100,"qty":19,"imp":25496,"pdp":1006,"purchase":15,"pdp_uv":502,"buy_uv":14,"imp_uv":5423},{"dt":"2026-03-21","gmv":1422500,"qty":25,"imp":29654,"pdp":1147,"purchase":18,"pdp_uv":543,"buy_uv":18,"imp_uv":5834},{"dt":"2026-03-22","gmv":2276000,"qty":40,"imp":38770,"pdp":1479,"purchase":30,"pdp_uv":618,"buy_uv":29,"imp_uv":6671},{"dt":"2026-03-23","gmv":2761200,"qty":48,"imp":32699,"pdp":1258,"purchase":36,"pdp_uv":549,"buy_uv":35,"imp_uv":6400},{"dt":"2026-03-24","gmv":2276000,"qty":40,"imp":32628,"pdp":1257,"purchase":30,"pdp_uv":559,"buy_uv":30,"imp_uv":6375},{"dt":"2026-03-25","gmv":1593200,"qty":28,"imp":30434,"pdp":1140,"purchase":23,"pdp_uv":569,"buy_uv":23,"imp_uv":6265},{"dt":"2026-03-26","gmv":2048400,"qty":36,"imp":24725,"pdp":906,"purchase":29,"pdp_uv":438,"buy_uv":28,"imp_uv":5610},{"dt":"2026-03-27","gmv":1308700,"qty":23,"imp":24170,"pdp":892,"purchase":19,"pdp_uv":447,"buy_uv":19,"imp_uv":5718},{"dt":"2026-03-28","gmv":1138000,"qty":20,"imp":25162,"pdp":908,"purchase":16,"pdp_uv":452,"buy_uv":16,"imp_uv":5564},{"dt":"2026-03-29","gmv":512100,"qty":9,"imp":30087,"pdp":1097,"purchase":8,"pdp_uv":531,"buy_uv":8,"imp_uv":5919},{"dt":"2026-03-30","gmv":2674300,"qty":47,"imp":36748,"pdp":1490,"purchase":35,"pdp_uv":622,"buy_uv":33,"imp_uv":4189},{"dt":"2026-03-31","gmv":2958800,"qty":52,"imp":30653,"pdp":1303,"purchase":37,"pdp_uv":521,"buy_uv":36,"imp_uv":4485},{"dt":"2026-04-01","gmv":2958800,"qty":52,"imp":33277,"pdp":1459,"purchase":37,"pdp_uv":606,"buy_uv":37,"imp_uv":5079},{"dt":"2026-04-02","gmv":1365600,"qty":24,"imp":30151,"pdp":1241,"purchase":19,"pdp_uv":550,"buy_uv":19,"imp_uv":5390},{"dt":"2026-04-03","gmv":2105300,"qty":37,"imp":27825,"pdp":1077,"purchase":28,"pdp_uv":465,"buy_uv":28,"imp_uv":4483},{"dt":"2026-04-04","gmv":2048400,"qty":36,"imp":26473,"pdp":998,"purchase":29,"pdp_uv":495,"buy_uv":29,"imp_uv":5737},{"dt":"2026-04-05","gmv":1479400,"qty":26,"imp":36702,"pdp":1404,"purchase":19,"pdp_uv":660,"buy_uv":19,"imp_uv":7667},{"dt":"2026-04-06","gmv":1707000,"qty":30,"imp":33834,"pdp":1262,"purchase":23,"pdp_uv":563,"buy_uv":23,"imp_uv":7584},{"dt":"2026-04-07","gmv":9502300,"qty":167,"imp":69453,"pdp":3012,"purchase":124,"pdp_uv":1023,"buy_uv":124,"imp_uv":11457},{"dt":"2026-04-08","gmv":3812300,"qty":67,"imp":35962,"pdp":1397,"purchase":46,"pdp_uv":582,"buy_uv":46,"imp_uv":6545},{"dt":"2026-04-09","gmv":2219100,"qty":39,"imp":34667,"pdp":1331,"purchase":29,"pdp_uv":600,"buy_uv":29,"imp_uv":6274},{"dt":"2026-04-10","gmv":2219100,"qty":39,"imp":31017,"pdp":1238,"purchase":33,"pdp_uv":549,"buy_uv":33,"imp_uv":5262},{"dt":"2026-04-11","gmv":1365600,"qty":24,"imp":34223,"pdp":1328,"purchase":23,"pdp_uv":574,"buy_uv":23,"imp_uv":5415},{"dt":"2026-04-12","gmv":3414000,"qty":60,"imp":41718,"pdp":1653,"purchase":43,"pdp_uv":764,"buy_uv":43,"imp_uv":7019},{"dt":"2026-04-13","gmv":2617400,"qty":46,"imp":39755,"pdp":1604,"purchase":33,"pdp_uv":674,"buy_uv":33,"imp_uv":6446},{"dt":"2026-04-14","gmv":1820800,"qty":32,"imp":35939,"pdp":1448,"purchase":26,"pdp_uv":637,"buy_uv":26,"imp_uv":6627},{"dt":"2026-04-15","gmv":2560500,"qty":45,"imp":40188,"pdp":1459,"purchase":34,"pdp_uv":589,"buy_uv":34,"imp_uv":6385},{"dt":"2026-04-16","gmv":2560500,"qty":45,"imp":43187,"pdp":1548,"purchase":37,"pdp_uv":686,"buy_uv":37,"imp_uv":12780},{"dt":"2026-04-17","gmv":2503600,"qty":44,"imp":29103,"pdp":1097,"purchase":30,"pdp_uv":488,"buy_uv":30,"imp_uv":5643},{"dt":"2026-04-18","gmv":2105300,"qty":37,"imp":30509,"pdp":1053,"purchase":25,"pdp_uv":480,"buy_uv":25,"imp_uv":5786},{"dt":"2026-04-19","gmv":2446700,"qty":43,"imp":39957,"pdp":1511,"purchase":35,"pdp_uv":656,"buy_uv":35,"imp_uv":6887},{"dt":"2026-04-20","gmv":1991500,"qty":35,"imp":36062,"pdp":1326,"purchase":26,"pdp_uv":612,"buy_uv":26,"imp_uv":6800}],"3185445":[{"dt":"2026-02-20","gmv":2729000,"qty":70,"imp":56611,"pdp":2196,"purchase":46,"pdp_uv":1066,"buy_uv":46,"imp_uv":10761},{"dt":"2026-02-21","gmv":2689100,"qty":69,"imp":57934,"pdp":2036,"purchase":51,"pdp_uv":1016,"buy_uv":51,"imp_uv":11873},{"dt":"2026-02-22","gmv":2697000,"qty":70,"imp":73640,"pdp":2373,"purchase":51,"pdp_uv":1223,"buy_uv":51,"imp_uv":15190},{"dt":"2026-02-23","gmv":3901900,"qty":101,"imp":117513,"pdp":3490,"purchase":68,"pdp_uv":1490,"buy_uv":68,"imp_uv":29717},{"dt":"2026-02-24","gmv":3997700,"qty":103,"imp":111294,"pdp":3164,"purchase":79,"pdp_uv":1390,"buy_uv":78,"imp_uv":30117},{"dt":"2026-02-25","gmv":3718600,"qty":94,"imp":101275,"pdp":2527,"purchase":60,"pdp_uv":1134,"buy_uv":60,"imp_uv":29734},{"dt":"2026-02-26","gmv":2553400,"qty":66,"imp":63717,"pdp":2018,"purchase":49,"pdp_uv":880,"buy_uv":48,"imp_uv":13678},{"dt":"2026-02-27","gmv":1995000,"qty":50,"imp":47177,"pdp":1517,"purchase":44,"pdp_uv":732,"buy_uv":44,"imp_uv":10601},{"dt":"2026-02-28","gmv":829800,"qty":22,"imp":54996,"pdp":1555,"purchase":18,"pdp_uv":796,"buy_uv":18,"imp_uv":12818},{"dt":"2026-03-01","gmv":2002700,"qty":53,"imp":53769,"pdp":1623,"purchase":32,"pdp_uv":767,"buy_uv":32,"imp_uv":12352},{"dt":"2026-03-02","gmv":3550900,"qty":91,"imp":103445,"pdp":3187,"purchase":71,"pdp_uv":1418,"buy_uv":71,"imp_uv":27564},{"dt":"2026-03-03","gmv":2473600,"qty":64,"imp":63734,"pdp":2088,"purchase":46,"pdp_uv":942,"buy_uv":45,"imp_uv":15590},{"dt":"2026-03-04","gmv":2625300,"qty":67,"imp":51547,"pdp":1661,"purchase":49,"pdp_uv":744,"buy_uv":49,"imp_uv":11521},{"dt":"2026-03-05","gmv":1460300,"qty":37,"imp":42549,"pdp":1404,"purchase":28,"pdp_uv":692,"buy_uv":28,"imp_uv":10287},{"dt":"2026-03-06","gmv":1364500,"qty":35,"imp":63997,"pdp":1936,"purchase":30,"pdp_uv":948,"buy_uv":29,"imp_uv":19414},{"dt":"2026-03-07","gmv":1548000,"qty":40,"imp":64222,"pdp":2045,"purchase":33,"pdp_uv":948,"buy_uv":33,"imp_uv":19628},{"dt":"2026-03-08","gmv":3431200,"qty":88,"imp":81367,"pdp":2434,"purchase":60,"pdp_uv":1122,"buy_uv":59,"imp_uv":24394},{"dt":"2026-03-09","gmv":2138600,"qty":54,"imp":47145,"pdp":1620,"purchase":39,"pdp_uv":764,"buy_uv":39,"imp_uv":12929},{"dt":"2026-03-10","gmv":2138600,"qty":54,"imp":45987,"pdp":1558,"purchase":35,"pdp_uv":737,"buy_uv":33,"imp_uv":11982},{"dt":"2026-03-11","gmv":2178500,"qty":55,"imp":42530,"pdp":1501,"purchase":42,"pdp_uv":713,"buy_uv":41,"imp_uv":10192},{"dt":"2026-03-12","gmv":1627800,"qty":42,"imp":42466,"pdp":1480,"purchase":30,"pdp_uv":720,"buy_uv":29,"imp_uv":10974},{"dt":"2026-03-13","gmv":829800,"qty":22,"imp":33301,"pdp":1219,"purchase":18,"pdp_uv":604,"buy_uv":17,"imp_uv":7031},{"dt":"2026-03-14","gmv":1236900,"qty":31,"imp":34204,"pdp":1238,"purchase":19,"pdp_uv":609,"buy_uv":19,"imp_uv":7632},{"dt":"2026-03-15","gmv":2082700,"qty":53,"imp":45575,"pdp":1787,"purchase":32,"pdp_uv":808,"buy_uv":32,"imp_uv":8364},{"dt":"2026-03-16","gmv":2042600,"qty":54,"imp":41114,"pdp":1456,"purchase":37,"pdp_uv":663,"buy_uv":37,"imp_uv":8572},{"dt":"2026-03-17","gmv":1468200,"qty":38,"imp":37480,"pdp":1347,"purchase":29,"pdp_uv":658,"buy_uv":29,"imp_uv":7689},{"dt":"2026-03-18","gmv":1548000,"qty":40,"imp":36628,"pdp":1377,"purchase":27,"pdp_uv":637,"buy_uv":27,"imp_uv":7562},{"dt":"2026-03-19","gmv":1731500,"qty":45,"imp":34866,"pdp":1317,"purchase":33,"pdp_uv":549,"buy_uv":33,"imp_uv":6467},{"dt":"2026-03-20","gmv":6040700,"qty":153,"imp":181768,"pdp":4606,"purchase":106,"pdp_uv":1999,"buy_uv":104,"imp_uv":76668},{"dt":"2026-03-21","gmv":1101200,"qty":28,"imp":38705,"pdp":1456,"purchase":22,"pdp_uv":732,"buy_uv":21,"imp_uv":7942},{"dt":"2026-03-22","gmv":1564000,"qty":40,"imp":43788,"pdp":1740,"purchase":28,"pdp_uv":954,"buy_uv":28,"imp_uv":7642},{"dt":"2026-03-23","gmv":1101200,"qty":28,"imp":37373,"pdp":1478,"purchase":25,"pdp_uv":801,"buy_uv":25,"imp_uv":7567},{"dt":"2026-03-24","gmv":1260800,"qty":32,"imp":36045,"pdp":1272,"purchase":26,"pdp_uv":612,"buy_uv":26,"imp_uv":7364},{"dt":"2026-03-25","gmv":1468200,"qty":38,"imp":37846,"pdp":1403,"purchase":26,"pdp_uv":643,"buy_uv":26,"imp_uv":7699},{"dt":"2026-03-26","gmv":1755600,"qty":44,"imp":34012,"pdp":1263,"purchase":34,"pdp_uv":559,"buy_uv":34,"imp_uv":6528},{"dt":"2026-03-27","gmv":1356600,"qty":34,"imp":28866,"pdp":1045,"purchase":27,"pdp_uv":500,"buy_uv":27,"imp_uv":6004},{"dt":"2026-03-28","gmv":1220900,"qty":31,"imp":30190,"pdp":1052,"purchase":21,"pdp_uv":457,"buy_uv":21,"imp_uv":5873},{"dt":"2026-03-29","gmv":1611800,"qty":42,"imp":41172,"pdp":1426,"purchase":28,"pdp_uv":636,"buy_uv":28,"imp_uv":7149},{"dt":"2026-03-30","gmv":9519900,"qty":241,"imp":157032,"pdp":3863,"purchase":94,"pdp_uv":1689,"buy_uv":87,"imp_uv":64959},{"dt":"2026-03-31","gmv":2212400,"qty":56,"imp":39667,"pdp":1554,"purchase":38,"pdp_uv":683,"buy_uv":37,"imp_uv":7300},{"dt":"2026-04-01","gmv":2188700,"qty":53,"imp":38818,"pdp":1429,"purchase":38,"pdp_uv":618,"buy_uv":38,"imp_uv":6699},{"dt":"2026-04-02","gmv":1466500,"qty":35,"imp":34952,"pdp":1379,"purchase":30,"pdp_uv":601,"buy_uv":30,"imp_uv":6080},{"dt":"2026-04-03","gmv":1298900,"qty":31,"imp":30914,"pdp":1132,"purchase":25,"pdp_uv":511,"buy_uv":25,"imp_uv":5522},{"dt":"2026-04-04","gmv":891700,"qty":23,"imp":28199,"pdp":991,"purchase":17,"pdp_uv":465,"buy_uv":17,"imp_uv":5338},{"dt":"2026-04-05","gmv":1352600,"qty":34,"imp":34295,"pdp":1227,"purchase":23,"pdp_uv":597,"buy_uv":22,"imp_uv":6339},{"dt":"2026-04-06","gmv":1799500,"qty":45,"imp":52916,"pdp":1756,"purchase":37,"pdp_uv":852,"buy_uv":37,"imp_uv":12596},{"dt":"2026-04-07","gmv":1831500,"qty":45,"imp":50935,"pdp":1713,"purchase":29,"pdp_uv":828,"buy_uv":29,"imp_uv":11586},{"dt":"2026-04-08","gmv":1288800,"qty":32,"imp":42652,"pdp":1477,"purchase":22,"pdp_uv":692,"buy_uv":22,"imp_uv":10217},{"dt":"2026-04-09","gmv":987600,"qty":24,"imp":30104,"pdp":1034,"purchase":18,"pdp_uv":473,"buy_uv":18,"imp_uv":5681},{"dt":"2026-04-10","gmv":856000,"qty":20,"imp":25159,"pdp":887,"purchase":15,"pdp_uv":400,"buy_uv":15,"imp_uv":4908},{"dt":"2026-04-11","gmv":616400,"qty":16,"imp":22083,"pdp":686,"purchase":13,"pdp_uv":356,"buy_uv":13,"imp_uv":4389},{"dt":"2026-04-12","gmv":909700,"qty":23,"imp":34241,"pdp":1163,"purchase":17,"pdp_uv":539,"buy_uv":17,"imp_uv":5725},{"dt":"2026-04-13","gmv":1059400,"qty":26,"imp":31256,"pdp":1046,"purchase":21,"pdp_uv":481,"buy_uv":21,"imp_uv":5559},{"dt":"2026-04-14","gmv":843900,"qty":21,"imp":31665,"pdp":1054,"purchase":17,"pdp_uv":469,"buy_uv":17,"imp_uv":6205},{"dt":"2026-04-15","gmv":1095300,"qty":27,"imp":31862,"pdp":1032,"purchase":20,"pdp_uv":481,"buy_uv":20,"imp_uv":6679},{"dt":"2026-04-16","gmv":1324800,"qty":32,"imp":41754,"pdp":1237,"purchase":24,"pdp_uv":584,"buy_uv":24,"imp_uv":13323},{"dt":"2026-04-17","gmv":903800,"qty":22,"imp":27187,"pdp":899,"purchase":20,"pdp_uv":455,"buy_uv":20,"imp_uv":6409},{"dt":"2026-04-18","gmv":885800,"qty":22,"imp":34225,"pdp":1075,"purchase":15,"pdp_uv":484,"buy_uv":15,"imp_uv":7070},{"dt":"2026-04-19","gmv":1574200,"qty":38,"imp":40356,"pdp":1311,"purchase":27,"pdp_uv":583,"buy_uv":27,"imp_uv":7247},{"dt":"2026-04-20","gmv":825900,"qty":21,"imp":28607,"pdp":931,"purchase":14,"pdp_uv":444,"buy_uv":14,"imp_uv":6293}]}};
+const PID={self:'3920046',compA:'3345606',compB:'3185445'};
+const COLORS={self:'#3b82f6',compA:'#e6a817',compB:'#8b5cf6'};
+const ROLE=['self','compA','compB'];
+const INFLOW={"period":"2026-04-14 ~ 2026-04-20 (최근 7일)","3920046":[{"inflow":"광고리스트","imp":71415,"click":359},{"inflow":"검색","imp":65930,"click":2158},{"inflow":"오늘의딜","imp":52509,"click":773},{"inflow":"PDP추천","imp":51711,"click":841},{"inflow":"홈","imp":36744,"click":460},{"inflow":"카테고리","imp":20396,"click":423},{"inflow":"브랜드관","imp":7731,"click":99},{"inflow":"기타","imp":6055,"click":667},{"inflow":"기획전","imp":4781,"click":17},{"inflow":"베스트","imp":3103,"click":51},{"inflow":"마이패키지","imp":2812,"click":110},{"inflow":"컨텐츠","imp":618,"click":9}],"3345606":[{"inflow":"검색","imp":51386,"click":2761},{"inflow":"홈","imp":23139,"click":321},{"inflow":"카테고리","imp":15625,"click":765},{"inflow":"기획전","imp":8682,"click":142},{"inflow":"PDP추천","imp":6522,"click":333},{"inflow":"마이패키지","imp":4370,"click":196},{"inflow":"기타","imp":2956,"click":507},{"inflow":"베스트","imp":1091,"click":11},{"inflow":"브랜드관","imp":892,"click":164},{"inflow":"컨텐츠","imp":406,"click":19},{"inflow":"오늘의딜","imp":5,"click":0}],"3185445":[{"inflow":"검색","imp":50993,"click":2278},{"inflow":"홈","imp":25121,"click":350},{"inflow":"카테고리","imp":13448,"click":501},{"inflow":"기획전","imp":9922,"click":196},{"inflow":"PDP추천","imp":5582,"click":285},{"inflow":"마이패키지","imp":3628,"click":135},{"inflow":"기타","imp":2469,"click":382},{"inflow":"광고리스트","imp":1775,"click":4},{"inflow":"베스트","imp":963,"click":4},{"inflow":"브랜드관","imp":739,"click":55},{"inflow":"컨텐츠","imp":377,"click":15},{"inflow":"오늘의딜","imp":282,"click":1}]};
+const INF_COLORS={'검색':'#3b82f6','PDP추천':'#10b981','카테고리':'#f59e0b','홈':'#ef4444','브랜드관':'#8b5cf6','기획전':'#06b6d4','마이패키지':'#ec4899','광고리스트':'#6b7280','오늘의딜':'#f97316','베스트':'#14b8a6','컨텐츠':'#84cc16','기타':'#9ca3af'};
+const INF_ORDER=['검색','카테고리','PDP추천','홈','브랜드관','기획전','베스트','컨텐츠','마이패키지','광고리스트','오늘의딜','기타'];
+const SRP={"period":"2026-04-14 ~ 2026-04-20 (최근 7일)","keywords":["수건","호텔수건","수건40수","타올","타월","수건 10장","수건세트","40수수건","코마사40수","세면타월","스트라이프수건","발수건"],"matrix":[{"pid":"3920046","kw":"수건","imp":945,"rank":3.5},{"pid":"3345606","kw":"수건","imp":1103,"rank":3.6},{"pid":"3185445","kw":"수건","imp":728,"rank":3.8},{"pid":"3920046","kw":"호텔수건","imp":48,"rank":4.2},{"pid":"3345606","kw":"호텔수건","imp":54,"rank":3.8},{"pid":"3185445","kw":"호텔수건","imp":50,"rank":3.4},{"pid":"3920046","kw":"수건40수","imp":22,"rank":1.8},{"pid":"3345606","kw":"수건40수","imp":37,"rank":2.8},{"pid":"3185445","kw":"수건40수","imp":null,"rank":null},{"pid":"3920046","kw":"타올","imp":20,"rank":1.7},{"pid":"3345606","kw":"타올","imp":33,"rank":2.9},{"pid":"3185445","kw":"타올","imp":13,"rank":4.5},{"pid":"3920046","kw":"타월","imp":14,"rank":1.4},{"pid":"3345606","kw":"타월","imp":17,"rank":2.5},{"pid":"3185445","kw":"타월","imp":12,"rank":4.2},{"pid":"3920046","kw":"수건 10장","imp":23,"rank":2.3},{"pid":"3345606","kw":"수건 10장","imp":14,"rank":3.1},{"pid":"3185445","kw":"수건 10장","imp":16,"rank":3.9},{"pid":"3920046","kw":"수건세트","imp":21,"rank":2.0},{"pid":"3345606","kw":"수건세트","imp":null,"rank":null},{"pid":"3185445","kw":"수건세트","imp":null,"rank":null},{"pid":"3920046","kw":"40수수건","imp":7,"rank":15.7},{"pid":"3345606","kw":"40수수건","imp":24,"rank":3.3},{"pid":"3185445","kw":"40수수건","imp":null,"rank":null},{"pid":"3920046","kw":"코마사40수","imp":9,"rank":7.2},{"pid":"3345606","kw":"코마사40수","imp":8,"rank":2.9},{"pid":"3185445","kw":"코마사40수","imp":null,"rank":null},{"pid":"3920046","kw":"세면타월","imp":2,"rank":9.0},{"pid":"3345606","kw":"세면타월","imp":8,"rank":2.3},{"pid":"3185445","kw":"세면타월","imp":10,"rank":3.9},{"pid":"3920046","kw":"스트라이프수건","imp":4,"rank":6.0},{"pid":"3345606","kw":"스트라이프수건","imp":5,"rank":10.8},{"pid":"3185445","kw":"스트라이프수건","imp":6,"rank":5.3},{"pid":"3920046","kw":"발수건","imp":21,"rank":2.5},{"pid":"3345606","kw":"발수건","imp":null,"rank":null},{"pid":"3185445","kw":"발수건","imp":null,"rank":null}]};
+let SCALE='linear';
+const CH={};
+
+function fmtKRW(n){if(n==null||isNaN(n))return '—';const a=Math.abs(n);if(a>=1e8)return (n/1e8).toFixed(1)+'억';if(a>=1e7)return Math.round(n/1e6)+'백만';if(a>=1e4)return Math.round(n/1e4)+'만';return n.toLocaleString()}
+function fmtDate(s){return s.substring(5)}
+function sumRecent(d,n){return d.slice(-n).reduce((a,r)=>({gmv:a.gmv+r.gmv,imp:a.imp+r.imp,pdp:a.pdp+r.pdp,purchase:a.purchase+r.purchase,qty:a.qty+r.qty,pdp_uv:a.pdp_uv+r.pdp_uv,buy_uv:a.buy_uv+r.buy_uv,imp_uv:a.imp_uv+r.imp_uv}),{gmv:0,imp:0,pdp:0,purchase:0,qty:0,pdp_uv:0,buy_uv:0,imp_uv:0})}
+function isoWeek(s){const d=new Date(s+'T00:00:00');const day=(d.getDay()+6)%7;const m=new Date(d);m.setDate(d.getDate()-day);return m.toISOString().substring(0,10)}
+function monthKey(s){return s.substring(0,7)}
+function aggregate(daily,k){const r={};daily.forEach(x=>{const key=k(x.dt);if(!r[key])r[key]={gmv:0,qty:0,imp:0,pdp:0,purchase:0,pdp_uv:0,buy_uv:0,imp_uv:0};r[key].gmv+=x.gmv;r[key].qty+=x.qty;r[key].imp+=x.imp;r[key].pdp+=x.pdp;r[key].purchase+=x.purchase;r[key].pdp_uv+=x.pdp_uv;r[key].buy_uv+=x.buy_uv;r[key].imp_uv+=x.imp_uv});return r}
+function clipCTR(r){if(!r||r.imp<=0)return null;const v=r.pdp/r.imp*100;return v>10?null:v}
+function clipCVR(r){if(!r||!r.pdp_uv||r.pdp_uv<=0)return null;const v=(r.buy_uv||0)/r.pdp_uv*100;return v>15?null:v}
+function mkCh(id,cfg){if(CH[id])CH[id].destroy();CH[id]=new Chart(document.getElementById(id),cfg);return CH[id]}
+
+function renderKPI(){
+  const el=document.getElementById('kpi-cards');
+  const cards=ROLE.map(role=>{
+    const pid=PID[role];const p=DATA.products[pid];const d=DATA.daily[pid];
+    const s7=sumRecent(d,7),sp7=sumRecent(d.slice(0,-7),7);
+    const mtd=d.filter(r=>r.dt>='2026-04-01').reduce((a,r)=>a+r.gmv,0);
+    const ctr=(s7.pdp/s7.imp*100).toFixed(2);
+    const cvr=s7.pdp_uv>0?(s7.buy_uv/s7.pdp_uv*100).toFixed(2):'—';
+    const wow=((s7.gmv/sp7.gmv-1)*100);
+    const wowCls=wow>=0?'chg up':'chg dn';
+    const icon=role==='self'?'🔵':'⚔️';
+    return `<div class="card kpi-card ${role==='self'?'':role}">
+      <div class="kpi-title">${icon} ${role==='self'?'자사':'경쟁사 '+(role==='compA'?'A':'B')} (${pid})</div>
+      <div class="kpi-label">${p.shortName}<br><span style="font-size:10px;color:var(--text3)">${p.brand} · ${p.partner} · ₩${p.price.toLocaleString()}</span></div>
+      <div class="kpi-row"><span class="l">7일 GMV</span><span class="v">${fmtKRW(s7.gmv)}</span></div>
+      <div class="kpi-row"><span class="l">WoW</span><span class="${wowCls}">${wow>=0?'+':''}${wow.toFixed(1)}%</span></div>
+      <div class="kpi-row"><span class="l">4월 누적 GMV</span><span class="v">${fmtKRW(mtd)}</span></div>
+      <div class="kpi-row"><span class="l">7일 CTR</span><span class="v">${ctr}<span class="s">%</span></span></div>
+      <div class="kpi-row"><span class="l">7일 CVR(UV)</span><span class="v">${cvr}<span class="s">%</span></span></div>
+      <div class="kpi-row"><span class="l">리뷰 수</span><span class="v">${p.review.toLocaleString()}<span class="s">건 · ★${p.rating.toFixed(1)}</span></span></div>
+    </div>`;
+  }).join('');
+  el.innerHTML=cards;
+}
+
+function renderOverviewCharts(){
+  const selfD=DATA.daily[PID.self].slice(-28);
+  const cAMap={};DATA.daily[PID.compA].forEach(r=>cAMap[r.dt]=r);
+  const cBMap={};DATA.daily[PID.compB].forEach(r=>cBMap[r.dt]=r);
+  const labels=selfD.map(r=>fmtDate(r.dt));
+  const safe=v=>SCALE==='log'?(v>0?v:null):v;
+  const mkLineSet=(data,lbl,col,fill)=>({label:lbl,data,borderColor:col,backgroundColor:col+'22',fill:fill,tension:.3,borderWidth:col===COLORS.self?3:2,borderDash:col===COLORS.self?[]:[5,5],pointRadius:0,spanGaps:true});
+  // GMV
+  mkCh('ov-gmv',{type:'line',data:{labels,datasets:[
+    mkLineSet(selfD.map(r=>safe(r.gmv)),'🔵 refine (3920046)',COLORS.self,true),
+    mkLineSet(selfD.map(r=>safe((cAMap[r.dt]||{}).gmv||0)),'⚔️ 라다타 (3345606)',COLORS.compA,false),
+    mkLineSet(selfD.map(r=>safe((cBMap[r.dt]||{}).gmv||0)),'⚔️ 코튼리빙 (3185445)',COLORS.compB,false),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{type:SCALE,min:SCALE==='log'?10000:undefined,ticks:{callback:v=>fmtKRW(v)},title:{display:true,text:'GMV'+(SCALE==='log'?' (로그)':'')}}}}});
+  // Qty
+  mkCh('ov-qty',{type:'line',data:{labels,datasets:[
+    mkLineSet(selfD.map(r=>r.qty),'🔵 refine',COLORS.self,true),
+    mkLineSet(selfD.map(r=>(cAMap[r.dt]||{}).qty||0),'⚔️ 라다타',COLORS.compA,false),
+    mkLineSet(selfD.map(r=>(cBMap[r.dt]||{}).qty||0),'⚔️ 코튼리빙',COLORS.compB,false),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{title:{display:true,text:'판매수량'}}}}});
+  // CTR
+  mkCh('ov-ctr',{type:'line',data:{labels,datasets:[
+    mkLineSet(selfD.map(clipCTR),'🔵 refine',COLORS.self,false),
+    mkLineSet(selfD.map(r=>clipCTR(cAMap[r.dt])),'⚔️ 라다타',COLORS.compA,false),
+    mkLineSet(selfD.map(r=>clipCTR(cBMap[r.dt])),'⚔️ 코튼리빙',COLORS.compB,false),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{min:0,max:8,title:{display:true,text:'CTR %'}}}}});
+  // CVR
+  mkCh('ov-cvr',{type:'line',data:{labels,datasets:[
+    mkLineSet(selfD.map(clipCVR),'🔵 refine',COLORS.self,false),
+    mkLineSet(selfD.map(r=>clipCVR(cAMap[r.dt])),'⚔️ 라다타',COLORS.compA,false),
+    mkLineSet(selfD.map(r=>clipCVR(cBMap[r.dt])),'⚔️ 코튼리빙',COLORS.compB,false),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{min:0,max:12,title:{display:true,text:'CVR(UV) %'}}}}});
+  // UV
+  mkCh('ov-uv',{type:'line',data:{labels,datasets:[
+    mkLineSet(selfD.map(r=>r.pdp_uv),'🔵 refine',COLORS.self,true),
+    mkLineSet(selfD.map(r=>(cAMap[r.dt]||{}).pdp_uv||0),'⚔️ 라다타',COLORS.compA,false),
+    mkLineSet(selfD.map(r=>(cBMap[r.dt]||{}).pdp_uv||0),'⚔️ 코튼리빙',COLORS.compB,false),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{title:{display:true,text:'PDP UV'}}}}});
+}
+function setScale(m){SCALE=m;document.getElementById('sc-lin').classList.toggle('active',m==='linear');document.getElementById('sc-log').classList.toggle('active',m==='log');renderOverviewCharts()}
+
+// --- 상품별 탭 템플릿 ---
+const PSCALE={self:'linear',compA:'linear',compB:'linear'};
+const PMODE={self:'day',compA:'day',compB:'day'};
+function renderProductTab(role){
+  const pid=PID[role];const p=DATA.products[pid];const d=DATA.daily[pid];
+  const r7=sumRecent(d,7),r14=sumRecent(d.slice(0,-7),7),r30=sumRecent(d,30);
+  const ctr7=(r7.pdp/r7.imp*100).toFixed(2);
+  const cvr7=r7.pdp_uv>0?(r7.buy_uv/r7.pdp_uv*100).toFixed(2):'—';
+  const wow=((r7.gmv/r14.gmv-1)*100).toFixed(1);
+  const wowCls=wow>=0?'chg up':'chg dn';
+  const color=COLORS[role];
+  const colorSelf=COLORS.self;
+  // comparators are always the other 2 products
+  const others=ROLE.filter(r=>r!==role);
+  const ownLabel=(role==='self'?'🔵':'⚔️')+' '+p.shortName;
+  const html=`
+  <div class="product-header">
+    <div class="emoji">${role==='self'?'🔵':'⚔️'}</div>
+    <div class="name"><div class="t">${p.shortName} <span style="font-size:11px;color:var(--text3);font-weight:500">(${pid})</span></div><div class="s">${p.name}</div><div class="s">${p.brand} · ${p.partner} · 출시 ${p.launch} · 리뷰 ${p.review.toLocaleString()}건 ★${p.rating.toFixed(1)} · 스크랩 ${p.scrap.toLocaleString()}</div></div>
+    <div class="price">₩${p.price.toLocaleString()}</div>
+  </div>
+  <div class="grid grid-4" style="margin-bottom:16px">
+    <div class="card"><div class="kpi-title">7일 GMV</div><div style="font-size:22px;font-weight:700;color:${color}">${fmtKRW(r7.gmv)}</div><div style="font-size:11px;color:var(--text2)">WoW <span class="${wowCls}">${wow>=0?'+':''}${wow}%</span></div></div>
+    <div class="card"><div class="kpi-title">30일 GMV</div><div style="font-size:22px;font-weight:700;color:${color}">${fmtKRW(r30.gmv)}</div><div style="font-size:11px;color:var(--text2)">판매 ${r30.qty.toLocaleString()}개</div></div>
+    <div class="card"><div class="kpi-title">7일 CTR</div><div style="font-size:22px;font-weight:700;color:${color}">${ctr7}%</div><div style="font-size:11px;color:var(--text2)">노출 ${r7.imp.toLocaleString()}</div></div>
+    <div class="card"><div class="kpi-title">7일 CVR(UV)</div><div style="font-size:22px;font-weight:700;color:${color}">${cvr7}%</div><div style="font-size:11px;color:var(--text2)">PDP UV ${r7.pdp_uv.toLocaleString()} · 구매 UV ${r7.buy_uv.toLocaleString()}</div></div>
+  </div>
+  <div class="controls">
+    <span class="label">기간</span>
+    <div class="btn-group">
+      <button id="${role}-m-day" class="active" onclick="setPMode('${role}','day')">일간</button>
+      <button id="${role}-m-week" onclick="setPMode('${role}','week')">주간</button>
+      <button id="${role}-m-month" onclick="setPMode('${role}','month')">월간</button>
+    </div>
+    <span class="label" style="margin-left:12px">스케일</span>
+    <div class="btn-group">
+      <button id="${role}-s-lin" class="active" onclick="setPScale('${role}','linear')">선형</button>
+      <button id="${role}-s-log" onclick="setPScale('${role}','log')">로그</button>
+    </div>
+  </div>
+  <div class="grid grid-2">
+    <div class="card"><h3 id="${role}-gmv-t">📊 GMV 추이 — 경쟁사 비교</h3><div class="chart-box"><canvas id="${role}-gmv"></canvas></div></div>
+    <div class="card"><h3 id="${role}-qty-t">📦 판매수량 추이</h3><div class="chart-box"><canvas id="${role}-qty"></canvas></div></div>
+    <div class="card"><h3>📈 CTR % (Y 0~8 고정)</h3><div class="chart-box"><canvas id="${role}-ctr"></canvas></div></div>
+    <div class="card"><h3>📈 CVR(UV) % (Y 0~12 고정)</h3><div class="chart-box"><canvas id="${role}-cvr"></canvas></div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>⚔️ 1:1 비교 — 최근 30일</h3>
+    <div style="overflow-x:auto"><table id="${role}-vs-tbl"></table></div>
+  </div>`;
+  document.getElementById('tab-'+role).innerHTML=html;
+  drawProductCharts(role);
+}
+
+function drawProductCharts(role){
+  const pid=PID[role];const d=DATA.daily[pid];
+  const others=ROLE.filter(r=>r!==role);
+  const mode=PMODE[role];const scale=PSCALE[role];
+  const keyFn=mode==='day'?(s=>s):(mode==='week'?isoWeek:monthKey);
+  const aggs=[d,...others.map(o=>DATA.daily[PID[o]])].map(arr=>aggregate(arr,keyFn));
+  const names=[DATA.products[pid].shortName,...others.map(o=>DATA.products[PID[o]].shortName)];
+  const pidsOrder=[pid,...others.map(o=>PID[o])];
+  const cols=[COLORS[role],...others.map(o=>COLORS[o])];
+  const allKeys=[...new Set(aggs.flatMap(a=>Object.keys(a)))].sort();
+  const labels=allKeys.map(k=>mode==='day'?fmtDate(k):(mode==='week'?'w/'+k.substring(5):k));
+  const safe=v=>scale==='log'?(v>0?v:null):v;
+  const chType=mode==='day'?'line':'bar';
+  const mkSets=(field,apply)=>aggs.map((a,i)=>({
+    label:(i===0?(role==='self'?'🔵 ':'⚔️ '):'⚔️ ')+names[i]+' ('+pidsOrder[i]+')',
+    data:allKeys.map(k=>a[k]?(apply?apply(a[k]):safe(a[k][field])):null),
+    borderColor:cols[i],backgroundColor:cols[i]+(chType==='bar'?'cc':'22'),
+    fill:chType==='line'&&i===0,tension:.3,
+    borderDash:chType==='line'&&i>0?[5,5]:[],
+    pointRadius:mode==='day'?0:3,borderWidth:i===0?3:2,spanGaps:true
+  }));
+  document.getElementById(role+'-gmv-t').textContent=(mode==='day'?'📊 일간':mode==='week'?'📊 주간':'📊 월간')+' GMV — 경쟁사 비교';
+  document.getElementById(role+'-qty-t').textContent=(mode==='day'?'📦 일간':mode==='week'?'📦 주간':'📦 월간')+' 판매수량';
+  mkCh(role+'-gmv',{type:chType,data:{labels,datasets:mkSets('gmv')},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{type:scale,min:scale==='log'?10000:undefined,ticks:{callback:v=>fmtKRW(v)},title:{display:true,text:'GMV'+(scale==='log'?' (로그)':'')}}}}});
+  mkCh(role+'-qty',{type:chType,data:{labels,datasets:mkSets('qty')},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{type:scale,min:scale==='log'?1:undefined,title:{display:true,text:'판매수량'}}}}});
+  mkCh(role+'-ctr',{type:'line',data:{labels,datasets:mkSets(null,r=>{if(r.imp<=0)return null;const v=r.pdp/r.imp*100;return v>10?null:v})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{min:0,max:8,title:{display:true,text:'CTR %'}}}}});
+  mkCh(role+'-cvr',{type:'line',data:{labels,datasets:mkSets(null,r=>{if(!r.pdp_uv)return null;const v=(r.buy_uv||0)/r.pdp_uv*100;return v>15?null:v})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{min:0,max:12,title:{display:true,text:'CVR(UV) %'}}}}});
+  // VS table
+  const r30=[d,...others.map(o=>DATA.daily[PID[o]])].map(arr=>sumRecent(arr,30));
+  const rows=[
+    ['월 GMV(30일)',...r30.map(x=>fmtKRW(x.gmv))],
+    ['노출',...r30.map(x=>x.imp.toLocaleString())],
+    ['PDP뷰',...r30.map(x=>x.pdp.toLocaleString())],
+    ['PDP UV',...r30.map(x=>x.pdp_uv.toLocaleString())],
+    ['구매건수',...r30.map(x=>x.purchase.toLocaleString())],
+    ['구매 UV',...r30.map(x=>x.buy_uv.toLocaleString())],
+    ['CTR',...r30.map(x=>(x.pdp/x.imp*100).toFixed(2)+'%')],
+    ['CVR(UV)',...r30.map(x=>x.pdp_uv>0?(x.buy_uv/x.pdp_uv*100).toFixed(2)+'%':'—')],
+    ['판매수량',...r30.map(x=>x.qty.toLocaleString()+'개')],
+    ['객단가 추정',...r30.map(x=>x.qty>0?fmtKRW(Math.round(x.gmv/x.qty)):'—')],
+  ];
+  const head=`<tr><th>지표</th>${[role,...others].map(r=>{const rp=DATA.products[PID[r]];const icon=r==='self'?'🔵':'⚔️';return `<th class="r">${icon} ${rp.shortName}<br><span style="font-weight:400;color:var(--text3)">${PID[r]}</span></th>`}).join('')}</tr>`;
+  const body=rows.map(row=>`<tr><td><strong>${row[0]}</strong></td>${row.slice(1).map((v,i)=>`<td class="r ${i===0?role:others[i-1]}">${v}</td>`).join('')}</tr>`).join('');
+  document.getElementById(role+'-vs-tbl').innerHTML=head+body;
+}
+function setPMode(role,m){PMODE[role]=m;['day','week','month'].forEach(x=>document.getElementById(role+'-m-'+x).classList.toggle('active',x===m));drawProductCharts(role)}
+function setPScale(role,m){PSCALE[role]=m;['lin','log'].forEach(x=>document.getElementById(role+'-s-'+x).classList.toggle('active',(x==='lin'?'linear':'log')===m));drawProductCharts(role)}
+
+function renderVS(){
+  const r30=ROLE.map(r=>sumRecent(DATA.daily[PID[r]],30));
+  const rows=[
+    ['월 GMV(30일)',...r30.map(x=>fmtKRW(x.gmv))],
+    ['노출',...r30.map(x=>x.imp.toLocaleString())],
+    ['PDP뷰',...r30.map(x=>x.pdp.toLocaleString())],
+    ['PDP UV',...r30.map(x=>x.pdp_uv.toLocaleString())],
+    ['구매건수',...r30.map(x=>x.purchase.toLocaleString())],
+    ['구매 UV',...r30.map(x=>x.buy_uv.toLocaleString())],
+    ['CTR',...r30.map(x=>(x.pdp/x.imp*100).toFixed(2)+'%')],
+    ['CVR(UV)',...r30.map(x=>x.pdp_uv>0?(x.buy_uv/x.pdp_uv*100).toFixed(2)+'%':'—')],
+    ['판매수량',...r30.map(x=>x.qty.toLocaleString()+'개')],
+    ['객단가 추정',...r30.map(x=>x.qty>0?fmtKRW(Math.round(x.gmv/x.qty)):'—')],
+    ['리뷰 누적',...ROLE.map(r=>DATA.products[PID[r]].review.toLocaleString()+'건')],
+    ['스크랩',...ROLE.map(r=>DATA.products[PID[r]].scrap.toLocaleString())],
+    ['정가',...ROLE.map(r=>'₩'+DATA.products[PID[r]].price.toLocaleString())],
+    ['출시일',...ROLE.map(r=>DATA.products[PID[r]].launch)],
+  ];
+  const head=`<tr><th>지표</th>${ROLE.map(r=>{const p=DATA.products[PID[r]];const icon=r==='self'?'🔵':'⚔️';return `<th class="r">${icon} ${p.shortName}<br><span style="font-weight:400;color:var(--text3)">${p.brand} · ${PID[r]}</span></th>`}).join('')}</tr>`;
+  const body=rows.map(row=>`<tr><td><strong>${row[0]}</strong></td>${row.slice(1).map((v,i)=>`<td class="r ${ROLE[i]}">${v}</td>`).join('')}</tr>`).join('');
+  document.getElementById('vs-tbl').innerHTML=head+body;
+  mkCh('vs-gmv',{type:'bar',data:{labels:ROLE.map(r=>DATA.products[PID[r]].shortName),datasets:[{label:'30일 GMV',data:r30.map(x=>x.gmv),backgroundColor:ROLE.map(r=>COLORS[r])}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmtKRW(v)}}}}});
+  mkCh('vs-rate',{type:'bar',data:{labels:ROLE.map(r=>DATA.products[PID[r]].shortName),datasets:[
+    {label:'CTR %',data:r30.map(x=>+(x.pdp/x.imp*100).toFixed(2)),backgroundColor:'#10b981'},
+    {label:'CVR(UV) %',data:r30.map(x=>x.pdp_uv>0?+(x.buy_uv/x.pdp_uv*100).toFixed(2):0),backgroundColor:'#ef4444'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},scales:{y:{title:{display:true,text:'%'}}}}});
+}
+
+function renderInflow(){
+  // Compute totals per product & inflow
+  const matrix={};ROLE.forEach(r=>{matrix[r]={};INF_ORDER.forEach(k=>matrix[r][k]=0)});
+  ROLE.forEach(r=>{
+    (INFLOW[PID[r]]||[]).forEach(row=>{matrix[r][row.inflow]=(matrix[r][row.inflow]||0)+row.imp});
+  });
+  // 100% stacked bar — products as rows
+  const labels=ROLE.map(r=>(r==='self'?'🔵 ':'⚔️ ')+DATA.products[PID[r]].shortName+' ('+PID[r]+')');
+  const datasets=INF_ORDER.map(k=>({
+    label:k,
+    data:ROLE.map(r=>{const t=INF_ORDER.reduce((s,x)=>s+(matrix[r][x]||0),0);return t>0?(matrix[r][k]||0)/t*100:0}),
+    backgroundColor:INF_COLORS[k]||'#888'
+  }));
+  mkCh('in-stack',{type:'bar',data:{labels,datasets},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.x.toFixed(1)+'%'}}},scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true}}}});
+  // CTR by path grouped (top 5 paths)
+  const mainPaths=['검색','카테고리','PDP추천','홈','브랜드관'];
+  const ctrData={};ROLE.forEach(r=>{ctrData[r]={};mainPaths.forEach(k=>{ctrData[r][k]={imp:0,click:0}})});
+  ROLE.forEach(r=>{
+    (INFLOW[PID[r]]||[]).forEach(row=>{if(mainPaths.includes(row.inflow)){ctrData[r][row.inflow].imp+=row.imp;ctrData[r][row.inflow].click+=row.click}});
+  });
+  mkCh('in-ctr',{type:'bar',data:{labels:mainPaths,datasets:ROLE.map(r=>({
+    label:(r==='self'?'🔵 ':'⚔️ ')+DATA.products[PID[r]].shortName+' ('+PID[r]+')',
+    data:mainPaths.map(k=>{const v=ctrData[r][k];return v.imp>0?+(v.click/v.imp*100).toFixed(2):0}),
+    backgroundColor:COLORS[r]
+  }))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{title:{display:true,text:'CTR %'}}}}});
+  // Per-product detail tables
+  ROLE.forEach(role=>{
+    const rows=(INFLOW[PID[role]]||[]).slice().sort((a,b)=>b.imp-a.imp);
+    const total=rows.reduce((s,r)=>s+r.imp,0);
+    const html=`<thead><tr><th>경로</th><th class="r">노출</th><th class="r">클릭</th><th class="r">CTR</th><th class="r">비중</th></tr></thead><tbody>${rows.map(r=>{
+      const ctr=r.imp>0?(r.click/r.imp*100).toFixed(2):'0.00';
+      const pct=total>0?(r.imp/total*100).toFixed(1):'0.0';
+      const col=INF_COLORS[r.inflow]||'#888';
+      return `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:6px"></span>${r.inflow}</td><td class="r">${r.imp.toLocaleString()}</td><td class="r">${r.click.toLocaleString()}</td><td class="r"><strong>${ctr}%</strong></td><td class="r">${pct}%</td></tr>`;
+    }).join('')}</tbody>`;
+    document.getElementById('in-'+role+'-tbl').innerHTML=html;
+  });
+  // Matrix
+  const mHead=`<thead><tr><th>상품</th>${INF_ORDER.map(k=>`<th class="r" style="color:${INF_COLORS[k]||'#666'}">${k}</th>`).join('')}<th class="r">총 노출</th></tr></thead>`;
+  const mBody='<tbody>'+ROLE.map(r=>{
+    const p=DATA.products[PID[r]];
+    const icon=r==='self'?'🔵':'⚔️';
+    const cells=INF_ORDER.map(k=>`<td class="r">${(matrix[r][k]||0).toLocaleString()}</td>`).join('');
+    const tot=INF_ORDER.reduce((s,k)=>s+(matrix[r][k]||0),0);
+    return `<tr><td><strong class="${r}">${icon} ${p.shortName}</strong><br><span style="color:var(--text3);font-size:10px">${PID[r]}</span></td>${cells}<td class="r"><strong>${tot.toLocaleString()}</strong></td></tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById('in-matrix').innerHTML=mHead+mBody;
+}
+
+function rankColor(r){if(r==null)return '';if(r<=5)return 'background:rgba(16,185,129,.2);color:#047857';if(r<=15)return 'background:rgba(245,158,11,.2);color:#b45309';return 'background:rgba(239,68,68,.2);color:#b91c1c'}
+function renderSRP(){
+  const KW=SRP.keywords;
+  // map pid->kw->{imp,rank}
+  const m={};ROLE.forEach(r=>{m[r]={};KW.forEach(k=>m[r][k]={imp:null,rank:null})});
+  SRP.matrix.forEach(row=>{
+    const role=ROLE.find(r=>PID[r]===row.pid);
+    if(role && m[role][row.kw]){m[role][row.kw]={imp:row.imp,rank:row.rank}}
+  });
+  // bar chart — imp by keyword
+  mkCh('srp-imp',{type:'bar',data:{labels:KW,datasets:ROLE.map(r=>({
+    label:(r==='self'?'🔵 ':'⚔️ ')+DATA.products[PID[r]].shortName,
+    data:KW.map(k=>m[r][k].imp||0),
+    backgroundColor:COLORS[r]
+  }))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{title:{display:true,text:'SRP 노출 수'}}}}});
+  // bar chart — rank by keyword (reversed axis)
+  mkCh('srp-rank',{type:'bar',data:{labels:KW,datasets:ROLE.map(r=>({
+    label:(r==='self'?'🔵 ':'⚔️ ')+DATA.products[PID[r]].shortName,
+    data:KW.map(k=>m[r][k].rank!=null?m[r][k].rank:null),
+    backgroundColor:COLORS[r]
+  }))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{y:{reverse:true,title:{display:true,text:'평균 순위 (낮을수록 좋음, 0=1위)'}}}}});
+  // matrix
+  const head=`<thead><tr><th>상품</th>${KW.map(k=>`<th class="r">${k}</th>`).join('')}</tr></thead>`;
+  const body='<tbody>'+ROLE.map(r=>{
+    const p=DATA.products[PID[r]];const icon=r==='self'?'🔵':'⚔️';
+    const cells=KW.map(k=>{
+      const v=m[r][k];
+      if(v.rank==null)return '<td class="r" style="color:#ccc">—</td>';
+      return `<td class="r" style="${rankColor(v.rank)};font-weight:700">${v.rank.toFixed(1)}</td>`;
+    }).join('');
+    return `<tr><td><strong class="${r}">${icon} ${p.shortName}</strong><br><span style="color:var(--text3);font-size:10px">${PID[r]}</span></td>${cells}</tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById('srp-matrix').innerHTML=head+body;
+  // features raw
+  const fHead=`<thead><tr><th>상품</th><th class="r">리뷰 수</th><th class="r">평점</th><th class="r">스크랩(위시)</th><th class="r">정가</th><th class="r">출시일</th><th class="r">경과일</th><th class="r">오늘의집 단독</th></tr></thead>`;
+  const today=new Date('2026-04-20');
+  const fBody='<tbody>'+ROLE.map(r=>{
+    const p=DATA.products[PID[r]];const icon=r==='self'?'🔵':'⚔️';
+    const days=Math.round((today-new Date(p.launch))/(86400000));
+    return `<tr><td><strong class="${r}">${icon} ${p.shortName}</strong><br><span style="color:var(--text3);font-size:10px">${p.brand} · ${PID[r]}</span></td><td class="r">${p.review.toLocaleString()}</td><td class="r">★${p.rating.toFixed(1)}</td><td class="r">${p.scrap.toLocaleString()}</td><td class="r">₩${p.price.toLocaleString()}</td><td class="r">${p.launch}</td><td class="r">${days}일</td><td class="r">${r==='self'?'—':'✅'}</td></tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById('srp-feat').innerHTML=fHead+fBody;
+}
+
+// 탭 전환
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('.tab-btn');if(!b)return;
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.t).classList.add('active');
+  window.dispatchEvent(new Event('resize'));
+});
+
+// 초기 렌더
+renderKPI();
+renderOverviewCharts();
+ROLE.forEach(r=>renderProductTab(r));
+renderInflow();
+renderSRP();
+renderVS();
+</script>
+</body>
+</html>

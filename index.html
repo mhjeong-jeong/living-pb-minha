@@ -9,30 +9,46 @@
 :root{--bg:#f5f6f8;--card:#fff;--border:#e2e4ea;--text:#1a1d27;--text2:#6b6e7d;--accent:#6c5ce7}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:Pretendard,sans-serif;font-size:14px;line-height:1.6;padding:40px 20px}
-.wrap{max-width:720px;margin:0 auto}
-h1{font-size:24px;margin-bottom:8px}
+.wrap{max-width:820px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px}
 .sub{color:var(--text2);margin-bottom:32px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;transition:all .15s}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:14px;transition:all .15s}
 .card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(108,92,231,.08)}
 .card a{color:var(--text);text-decoration:none;display:block}
-.card .t{font-weight:700;font-size:16px;margin-bottom:4px}
-.card .d{color:var(--text2);font-size:13px}
-.card .m{color:var(--text2);font-size:11px;margin-top:8px;font-family:monospace}
+.card .t{font-weight:700;font-size:17px;margin-bottom:6px}
+.card .d{color:var(--text2);font-size:13px;margin-bottom:8px}
+.card .m{color:var(--text2);font-size:11px;font-family:monospace;padding-top:10px;border-top:1px dashed var(--border);margin-top:10px}
+.card .badge{display:inline-block;background:var(--accent);color:#fff;padding:2px 8px;border-radius:99px;font-size:10px;margin-right:6px;vertical-align:middle}
+.card.primary{border-left:4px solid var(--accent)}
 .footer{margin-top:32px;font-size:12px;color:var(--text2);text-align:center}
+.footer a{color:inherit}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>🎯 리빙 PB 대시보드 허브</h1>
-  <p class="sub">Minha · 오늘의집 리빙 PB · 매일 9시 Athena 자동 갱신</p>
+  <p class="sub">Minha · 오늘의집 리빙 PB 실적/유입/SRP 분석 · 매일 9시 Athena 자동 갱신</p>
+
+  <div class="card primary">
+    <a href="living-pb.html">
+      <div class="t"><span class="badge">NEW</span>🏠 통합 대시보드 — 리빙 PB 전체 23개</div>
+      <div class="d">오늘의집 layer 브랜드의 리빙 PB (가구 제외 패브릭·생활용품) 23개 상품을 한 페이지에서 드롭다운으로 전환. 각 상품의 카테고리 내 TOP 2 경쟁사 자동 선정 + 6탭 심층 분석 (Overview · 상품별 · 유입 퍼널 · SRP · 1:1 비교).</div>
+      <div class="m">범위: 오늘의집 layer × cate_d1 ≠ 가구 · 분석기간: 60일 Daily / 7일 Inflow·SRP</div>
+    </a>
+  </div>
+
   <div class="card">
     <a href="towel-pb.html">
-      <div class="t">🏨 호텔수건 PB (refine 코마사)</div>
-      <div class="d">자사 3920046 vs 단독 경쟁사 2종 (라다타 3345606, 코튼리빙 3185445) · 60일 GMV/퍼널 · 7일 유입·SRP</div>
+      <div class="t">🏨 호텔수건 PB 단독 대시보드 (refine 3920046)</div>
+      <div class="d">자사 3920046 vs 단독 경쟁사 2종 (라다타 3345606, 코튼리빙 3185445) 수동 선정 버전. 초기 v1 구조 유지용.</div>
       <div class="m">카테고리: 생활용품 &gt; 욕실용품 &gt; 수건/타월 &gt; 일반세면타월</div>
     </a>
   </div>
-  <div class="footer">데이터 원천 Athena · ba_preserved.commerce_daily_user_count_v3 외 · Cowork/Claude 자동 생성</div>
+
+  <div class="footer">
+    데이터 원천 Athena · ba_preserved.commerce_daily_user_count_v3 / commerce_gross_profit_orders / ds_com_productions_imp_click_d / commerce_product_search_tb ·
+    <a href="https://github.com/mhjeong-jeong/living-pb-minha">GitHub</a>
+  </div>
 </div>
 </body>
 </html>

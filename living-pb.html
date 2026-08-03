@@ -67,6 +67,18 @@ select{font-family:inherit;font-size:13px;padding:6px 8px;border-radius:8px;bord
   background:var(--surface);color:var(--ink)}
 .range-note{font-size:12px;color:var(--muted)}
 
+/* period total strip */
+.totalbar{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:900px){.totalbar{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.totalbar{grid-template-columns:1fr}}
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.tcard.lead{border-color:var(--pb)}
+.tcard .tl{font-size:11px;color:var(--muted);letter-spacing:.03em}
+.tcard .tv{font-size:24px;font-weight:720;letter-spacing:-.01em;margin-top:4px}
+.tcard.lead .tv{color:var(--pb)}
+.tcard .ts{font-size:12px;color:var(--ink2);margin-top:5px}
+.tcard .ts .delta{font-size:12px}
+
 /* KPI grid */
 .kpigrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:900px){.kpigrid{grid-template-columns:repeat(2,1fr)}}
@@ -167,6 +179,7 @@ svg{display:block;width:100%;height:auto;overflow:visible}
   </div>
 
   <div id="viewSummary">
+    <div class="totalbar" id="totalBar"></div>
     <div class="kpigrid" id="kpigrid"></div>
     <div class="catov" id="catOverview"></div>
   </div>
@@ -447,6 +460,40 @@ function renderNav(){
     const v=b.dataset.v; ST.view = v==='summary'?'summary':+v; if(v!=='summary')ST.groupIdx=+v; renderAll();});
 }
 
+function renderTotal(){
+  const [start,end]=rangeDates(); const [ps,pe]=prevDates(start,end);
+  const prevOK = ps >= D.dateRange.start;
+  const allMine = D.groups.map(g=>g.mine);
+  const allComp = D.groups.flatMap(g=>g.comps);
+  const pb=sumRangeMulti(allMine,start,end), cp=sumRangeMulti(allComp,start,end);
+  const pbPrev=sumRangeMulti(allMine,ps,pe);
+  const dl=(prevOK&&pbPrev.gmv)?(pb.gmv-pbPrev.gmv)/pbPrev.gmv:null;
+  const dCls=dl==null?'':dl>=0?'up':'down';
+  const dTxt=dl==null?'':`<span class="delta ${dCls} tnum">${dl>=0?'▲':'▼'} ${Math.abs(dl*100).toFixed(0)}%</span> <span style="color:var(--muted)">vs 이전 동기간</span>`;
+  const days=Math.max(1,Math.round((parse(end)-parse(start))/86400000)+1);
+  $('#totalBar').innerHTML=`
+    <div class="tcard lead">
+      <div class="tl">담당상품(PB) ${allMine.length}종 · 합계 매출</div>
+      <div class="tv tnum">₩${plain(pb.gmv)}</div>
+      <div class="ts">${dTxt||`<span style="color:var(--muted)">이전 동기간 데이터 없음</span>`}</div>
+    </div>
+    <div class="tcard">
+      <div class="tl">경쟁상품 ${allComp.length}종 · 합계 매출</div>
+      <div class="tv tnum">₩${plain(cp.gmv)}</div>
+      <div class="ts">담당+경쟁 합계 ₩${won(pb.gmv+cp.gmv)}</div>
+    </div>
+    <div class="tcard">
+      <div class="tl">담당 경쟁 대비 지수</div>
+      <div class="tv tnum">${idxPct(pb.gmv,cp.gmv)}</div>
+      <div class="ts">100=경쟁과 동일 매출</div>
+    </div>
+    <div class="tcard">
+      <div class="tl">담당 주문수 합계</div>
+      <div class="tv tnum">${num(pb.orders)}건</div>
+      <div class="ts">${days}일 · 일평균 ${plain(pb.orders/days)}건 · 매출/일 ₩${won(pb.gmv/days)}</div>
+    </div>`;
+}
+
 function renderKPI(){
   const [start,end]=rangeDates(); const [ps,pe]=prevDates(start,end);
   const prevOK = ps >= D.dateRange.start;
@@ -656,7 +703,7 @@ function renderAll(){
   const summary = ST.view==='summary';
   $('#viewSummary').style.display = summary?'block':'none';
   $('#viewDetail').style.display  = summary?'none':'block';
-  if(summary){ renderKPI(); renderCatOverview(); } else renderDetail();
+  if(summary){ renderTotal(); renderKPI(); renderCatOverview(); } else renderDetail();
 }
 renderAll();
 </script>

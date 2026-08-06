@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"><title>26SS 여름 침구 리뷰 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<title>26SS 여름 침구 리뷰 대시보드</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 :root{
@@ -186,7 +187,8 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
 .cause .ctext{font-size:12.5px;color:var(--ink2);line-height:1.5}
 .cause .why{font-size:10px;font-weight:800;color:var(--accent);
   background:color-mix(in srgb,var(--accent) 14%,transparent);padding:1px 7px;border-radius:999px}
-@media (max-width:820px){.causes{grid-template-columns:1fr}}
+.causes.three{grid-template-columns:repeat(3,1fr)}
+@media (max-width:820px){.causes,.causes.three{grid-template-columns:1fr}}
 .mini-cap{font-size:12.5px;font-weight:800;color:var(--ink);margin:10px 0 8px}
 .sub-h{font-size:16px;font-weight:800;margin:28px 0 2px;padding-top:20px;
   border-top:1px dashed var(--line);display:flex;align-items:center;gap:9px}
@@ -346,6 +348,22 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
     <div class="s-head"><span class="s-num">05</span><h2>시리즈 딥다이브 · 유형별 PB vs 지정 경쟁코드</h2></div>
     <p class="s-desc">지정 벤치마크 4개 페어 비교 — 알러지케어 <b>3640244↔3640258</b> · 60수 <b>3640123↔676405</b> · 시어서커 <b>4037745↔117560</b> · 듀라론 패드 <b>4037734↔1403437</b>. 2026년 1~7월 순매출, 계절구분은 옵션명 기준. 절대 규모 차이는 전제하고 <b>곡선의 모양</b>과 <b>냉감 옵션의 사이즈·구성·색상 차이</b>를 본다.</p>
 
+    <div class="chart-title" style="margin-top:2px"><span>PB 공통 이슈 — 4개 유형에 공통으로 걸리는 3가지</span></div>
+    <div class="causes three" style="margin-top:0">
+      <div class="cause"><div class="cn">1</div><div>
+        <div class="ctitle">소재 — 트렌드 미스매치</div>
+        <div class="ctext">올해 냉감 수요는 <b>접촉냉감 소재</b>(폴리아미드·렌징텐셀·폴리+스판)로 이동. PB 여름 라인업은 이전 트렌드(시어서커·기본 듀라론) 중심으로 기획돼 적중도가 낮았다.</div>
+      </div></div>
+      <div class="cause"><div class="cn">2</div><div>
+        <div class="ctitle">사이즈 — K/LK 부재</div>
+        <div class="ctext">4개 유형 모두 <b>K·LK 큰 사이즈가 없다.</b> 3P는 큰 사이즈가 냉감 매출의 13~72%를 차지 — 듀라론은 3P의 K 하나(82.7백만)가 PB 전체(85.1백만)와 맞먹는다.</div>
+      </div></div>
+      <div class="cause"><div class="cn">3</div><div>
+        <div class="ctitle">사계절 낙폭 — 여름을 못 버팀</div>
+        <div class="ctext">사계절 옵션 봄(2~4월)→여름(5~7월) 평균: <b>PB −61~66% 급락</b>(60수·알러지) vs <b>3P는 유지·상승</b>(60수 −20%, 알러지 +73%). PB 사계절은 여름 수요를 받지 못한다.</div>
+      </div></div>
+    </div>
+
         <!-- A. 알러지케어 -->
     <div class="sub-h"><span class="lch">A</span>알러지케어 <span class="codes">PB 3640244 ↔ 3P 3640258 슬로우모닝</span></div>
     <div class="chart-title" style="margin-top:10px"><span>계절옵션 월별 곡선 (백만원)</span>
@@ -390,7 +408,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">전량 세트 · 패드포함 세트 = 매출 63% · 히트컬러 1색 56%</div>
       </div>
     </div>
-    <div class="takeaway"><b>알러지케어.</b> 사계절 옵션이 봄(2~4월 평균)→여름(5~7월 평균) PB <b style="color:var(--down)">−66%</b>(32.3→11.0백만) vs 3P <b style="color:var(--up)">+73%</b>(25.3→43.7백만) — 3P는 사계절도 여름에 더 팔린다. 냉감 갭은 <b>K 사이즈·패드포함 세트·히트컬러 집중</b>의 부재.</div>
+    <div class="takeaway"><b>알러지케어 — 상품별 갭.</b> ① <b>세트 구성</b>: PB는 이불 단품 91% vs 3P는 전량 세트, 특히 <b>패드포함 세트가 매출 63%</b> ② <b>컬러</b>: 3P는 블루레이크 1색에 56% 집중 vs PB는 최다 색상도 32%로 분산 ③ <b>사이즈</b>: 3P는 K가 수량 17%·40.0백만, PB는 SS·Q뿐. (사계절 낙폭 −66% vs +73%는 공통 이슈 ③ 참조)</div>
 
     <!-- B. 60수 -->
     <div class="sub-h"><span class="lch">B</span>60수 침구세트 <span class="codes">PB 3640123 ↔ 3P 676405 베이직톤</span></div>
@@ -436,7 +454,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">큰 사이즈(Q/K겸용·LK·K패드) = 매출 72% · 호텔침구=화이트 58%</div>
       </div>
     </div>
-    <div class="takeaway"><b>60수.</b> 사계절 옵션 봄→여름 PB <b style="color:var(--down)">−61%</b>(18.7→7.3백만) vs 3P <b style="color:var(--up)">−20%</b>(215.7→172.7백만, 유지) — 3P 사계절(호텔침구 상시수요)은 여름을 버틴다. 냉감 갭은 <b>QK·LK 사이즈(3P 매출 72%)·세트 구성·화이트 컬러(58% vs 3%)</b>.</div>
+    <div class="takeaway"><b>60수 — 상품별 갭.</b> ① <b>컬러</b>: 호텔침구의 본질은 화이트 — 3P 화이트 58% vs <b>PB 화이트 3%</b>(PB 1위는 민트 29%) ② <b>세트 구성</b>: PB 단품 93% vs 3P 이불+베개 세트 77% + 추가 냉감패드 23% ③ <b>사이즈</b>: 3P는 Q/K겸용·LK·K패드가 매출 72%, PB는 SS에 76% 쏠림. (사계절 낙폭 −61% vs −20%는 공통 이슈 ③ 참조)</div>
 
     <!-- C. 시어서커 -->
     <div class="sub-h"><span class="lch">C</span>시어서커 <span class="codes">PB 4037745 ↔ 3P 117560 디어썸머</span></div>
@@ -483,7 +501,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">컬러 20종+ 롱테일(상위 4컬러=51%) · 패드포함 세트 = 매출 69% · 4월 선판매 25백만</div>
       </div>
     </div>
-    <div class="takeaway"><b>시어서커.</b> 구성(패드포함 세트)은 PB도 41%로 대응됨 — 갭의 본질은 <b>① 컬러 폭: 3종 vs 20종+</b>(잘 팔리는 집은 넓게 깔고 상위 4컬러 51%로 수렴) <b>② K 사이즈</b>(3P 단독 K 13%·60.1백만 vs PB는 Q/K겸용 11%뿐) <b>③ 진입 시점</b>(3P 4월 25백만 선판매 vs PB 5월 시작).</div>
+    <div class="takeaway"><b>시어서커 — 상품별 갭.</b> 세트 구성(패드포함 풀세트 41%)은 대응됨. ① <b>컬러 폭: 3종 vs 20종+</b> — 3P는 넓게 깔고 상위 4컬러로 51%가 수렴(디자인 다양성이 히트 확률을 만든다) ② <b>진입 시점</b>: 3P는 4월에 이미 25백만 선판매, PB는 5월 시작 ③ <b>사이즈</b>: K 단독 구성 없음(Q/K겸용 11%뿐) vs 3P K 13%·60.1백만.</div>
 
     <!-- D. 듀라론 패드 -->
     <div class="sub-h"><span class="lch">D</span>듀라론 패드 <span class="codes">PB 4037734 ↔ 3P 1403437 헬로우슬립</span></div>
@@ -526,9 +544,9 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">K만 82.7백만 ≈ PB 듀라론 전체(85.1) · 1월부터 상시 판매</div>
       </div>
     </div>
-    <div class="takeaway"><b>듀라론 패드.</b> 구성(패드 단품)·컬러 구조는 유사 — 갭은 <b>① K 사이즈 부재: 3P의 K만 82.7백만으로 PB 전체(85.1백만)와 맞먹음</b> <b>② 진입 시점: 3P는 1월부터 팔리고 4월 20백만 램프업, PB는 5월 시작</b> ③ 3P는 화이트 1위(45%)·그레이 보유, PB는 블루 1위·그레이 없음.</div>
+    <div class="takeaway"><b>듀라론 패드 — 상품별 갭.</b> 구성(패드 단품)·컬러 구조는 유사. ① <b>사이즈</b>: 3P의 K 하나가 82.7백만 ≈ PB 전체(85.1백만) — K 부재가 최대 갭 ② <b>진입 시점</b>: 3P는 1월부터 상시 판매·4월 20백만 램프업, PB는 5월 시작 ③ <b>컬러</b>: 3P는 화이트 1위(45%)+그레이(20%) 보유, PB는 블루 1위·그레이 없음.</div>
 
-    <div class="takeaway" style="border-left-color:var(--down)"><b>4개 유형 공통 결론.</b> ① <b>K/LK 큰 사이즈 부재</b>(모든 유형 공통 — 3P는 큰 사이즈가 냉감 매출 13~72%) ② <b>세트 구성 부재</b>(알러지·60수 — PB 단품 91~93% vs 3P 세트 77~96%) ③ <b>컬러 전략</b>(3P는 넓게 깔거나 히트컬러에 45~58% 집중, PB는 3종 협소 또는 분산) ④ <b>진입 1개월+ 지연</b>(3P 3~4월 램프업 vs PB 5월 시작).</div>
+    <div class="takeaway" style="border-left-color:var(--down)"><b>정리.</b> 공통 3대 이슈(<b>소재 트렌드 미스매치 · K/LK 부재 · 사계절 낙폭</b>) 위에 상품별 갭(<b>세트 구성 · 컬러 전략 · 진입 시점</b>)이 겹친 것이 PB 여름 부진의 실체 — 개선 액션은 07번 유형별 갭 카드로 연결.</div>
   </section>
 
   <!-- 6. PB 상품코드 현황 -->

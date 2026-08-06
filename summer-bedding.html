@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"><title>26SS 여름 침구 리뷰 대시보드</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f7f7f5; --card:#ffffff; --ink:#191b21; --ink2:#4c515c; --ink3:#828896;
+  --line:#e6e6e2; --line2:#efefec;
+  --accent:#ef5a2c;         /* 오늘의집 coral — 26년 / PB / 강조 */
+  --steel:#7d93a8;          /* 25년 */
+  --steel-soft:#c7d2dc;
+  --up:#12916a; --up-soft:#d5efe5;
+  --down:#d94b52; --down-soft:#f7dcdd;
+  --neutral:#9aa0ac;
+  --chip:#f0f0ec;
+  --shadow:0 1px 2px rgba(20,22,28,.05),0 8px 24px -12px rgba(20,22,28,.12);
+  --r:14px; --maxw:1160px;
+  --mono:"SF Mono",ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+  --sans:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#101216; --card:#171a20; --ink:#eef0f4; --ink2:#adb3c0; --ink3:#767d8c;
+    --line:#262a32; --line2:#20242b; --chip:#20242c; --steel-soft:#39485a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+    --up-soft:#12312a; --down-soft:#3a1f22;
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f7f7f5; --card:#ffffff; --ink:#191b21; --ink2:#4c515c; --ink3:#828896;
+  --line:#e6e6e2; --line2:#efefec; --chip:#f0f0ec; --steel-soft:#c7d2dc;
+  --shadow:0 1px 2px rgba(20,22,28,.05),0 8px 24px -12px rgba(20,22,28,.12);
+  --up-soft:#d5efe5; --down-soft:#f7dcdd;
+}
+:root[data-theme="dark"]{
+  --paper:#101216; --card:#171a20; --ink:#eef0f4; --ink2:#adb3c0; --ink3:#767d8c;
+  --line:#262a32; --line2:#20242b; --chip:#20242c; --steel-soft:#39485a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+  --up-soft:#12312a; --down-soft:#3a1f22;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;line-height:1.5;font-size:15px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:28px 20px 72px}
+.tnum{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.01em}
+
+/* masthead */
+.mast{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
+  flex-wrap:wrap;padding-bottom:20px;border-bottom:2px solid var(--ink);margin-bottom:26px}
+.mast .eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px}
+.mast h1{font-size:32px;font-weight:800;line-height:1.1}
+.mast .sub{color:var(--ink2);font-size:14px;margin-top:8px}
+.mast .meta{font-size:12.5px;color:var(--ink3);text-align:right;line-height:1.7}
+.mast .meta b{color:var(--ink2);font-weight:600}
+
+/* kpi strip */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .k-label{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.02em}
+.kpi .k-val{font-size:27px;font-weight:800;margin-top:7px;letter-spacing:-.02em}
+.kpi .k-sub{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.delta{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:13px;
+  padding:2px 8px;border-radius:999px;line-height:1.4}
+.delta.up{color:var(--up);background:var(--up-soft)}
+.delta.down{color:var(--down);background:var(--down-soft)}
+.delta.flat{color:var(--ink2);background:var(--chip)}
+
+/* section */
+section{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:24px 24px 26px;box-shadow:var(--shadow);margin-bottom:22px}
+.s-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap}
+.s-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent);
+  border:1px solid var(--accent);border-radius:6px;padding:2px 7px;letter-spacing:.02em}
+.s-head h2{font-size:20px;font-weight:800}
+.s-desc{color:var(--ink2);font-size:13.5px;margin:8px 0 20px;max-width:78ch}
+.s-desc b{color:var(--ink);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+/* chart */
+.chart-title{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:14px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:11px;height:11px;border-radius:3px;display:inline-block}
+.gbars{display:flex;align-items:flex-end;gap:10px;height:190px;padding-top:22px;
+  border-bottom:1px solid var(--line);position:relative}
+.gcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:0;height:100%;position:relative}
+.gbar-pair{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:100%}
+.bar{width:46%;max-width:26px;border-radius:4px 4px 0 0;position:relative;transition:height .6s cubic-bezier(.2,.7,.2,1)}
+.bar.b25{background:var(--steel)}
+.bar.b26{background:var(--accent)}
+.bar .bv{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;
+  font-weight:700;color:var(--ink2);white-space:nowrap}
+.xlabels{display:flex;gap:10px;margin-top:8px}
+.xlabels div{flex:1;text-align:center;font-size:11.5px;color:var(--ink3);font-weight:600}
+.growlab{display:flex;gap:10px;margin-top:6px}
+.growlab div{flex:1;text-align:center;font-size:10.5px;font-weight:700}
+.growlab .p{color:var(--up)} .growlab .n{color:var(--down)}
+.linechart{margin-top:2px}
+.linechart svg{display:block;overflow:visible}
+svg text{font-family:var(--sans)}
+
+/* horizontal season bars */
+.hbars{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.hrow{display:grid;grid-template-columns:88px 1fr 118px;align-items:center;gap:12px}
+.hrow .hlab{font-size:13px;font-weight:700;color:var(--ink)}
+.htrack{position:relative;height:26px}
+.hset{position:absolute;top:0;height:11px;border-radius:3px}
+.hset.h25{top:0;background:var(--steel-soft)}
+.hset.h26{top:14px;background:var(--accent)}
+.hrow .hval{font-size:12px;text-align:right;color:var(--ink2);font-weight:600}
+.hrow .hval .d{font-weight:800}
+
+/* driver cards */
+.drv{border:1px solid var(--line);border-radius:14px;padding:16px 16px 8px;background:var(--paper)}
+.drv.new{border-top:3px solid var(--accent)}
+.drv.grow{border-top:3px solid var(--up)}
+.drv.drop{border-top:3px solid var(--down)}
+.drv h3{font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.drv .cap{font-size:11.5px;color:var(--ink3);margin:2px 0 12px;font-weight:600}
+.drv .sum{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.drv .sum.new{color:var(--accent)} .drv .sum.grow{color:var(--up)} .drv .sum.drop{color:var(--down)}
+.ilist{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.ilist li{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;
+  padding:7px 0;border-top:1px solid var(--line2)}
+.ilist li .nm{color:var(--ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ilist li .code{font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-right:5px}
+.ilist li .amt{font-weight:800;white-space:nowrap}
+.amt.p{color:var(--up)} .amt.n{color:var(--down)}
+.ilist li .pct{font-size:10.5px;color:var(--ink3);font-weight:700;margin-left:6px}
+
+/* table */
+.tbl-scroll{overflow-x:auto;margin-top:6px;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:660px}
+thead th{background:var(--paper);text-align:right;padding:11px 14px;font-size:11.5px;
+  font-weight:700;color:var(--ink3);letter-spacing:.02em;border-bottom:1px solid var(--line);white-space:nowrap}
+thead th:first-child{text-align:left}
+tbody td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line2);
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+tbody td:first-child{text-align:left;font-weight:700}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid var(--line)}
+.meter{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end}
+.meter .track{width:52px;height:7px;border-radius:4px;background:var(--chip);overflow:hidden}
+.meter .fill{height:100%;border-radius:4px}
+.tag{font-family:var(--mono);font-size:10px;color:var(--ink3);background:var(--chip);
+  padding:1px 6px;border-radius:5px;margin-left:6px;font-weight:600}
+.note-flag{color:var(--accent);font-weight:800;cursor:help}
+
+/* competitor cards */
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ccard{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--paper);
+  display:flex;flex-direction:column;gap:10px}
+.ccard .ctop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ccard h3{font-size:16px;font-weight:800}
+.status{font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.status.improve{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.status.watch{color:var(--down);background:var(--down-soft)}
+.status.verify{color:var(--ink2);background:var(--chip)}
+.ccard .gap{font-size:13px;color:var(--ink);line-height:1.55}
+.ccard .gap b{color:var(--down);font-weight:700}
+.cstats{display:flex;gap:16px;margin-top:2px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.cstat{font-size:11.5px;color:var(--ink3);font-weight:600}
+.cstat b{display:block;font-size:16px;color:var(--ink);font-weight:800;margin-top:2px;letter-spacing:-.01em}
+.takeaway{margin-top:14px;padding:14px 16px;border-left:3px solid var(--accent);
+  background:var(--paper);border-radius:0 10px 10px 0;font-size:13.5px;color:var(--ink2)}
+.takeaway b{color:var(--ink)}
+.mats{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.mats span{font-size:12px;font-weight:700;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+  padding:4px 11px;border-radius:999px}
+.mats .old{color:var(--ink3);background:var(--chip);border-color:var(--line)}
+.foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);line-height:1.7}
+@media (max-width:820px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid2,.grid3,.comp{grid-template-columns:1fr}
+  .mast h1{font-size:26px}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mast">
+    <div>
+      <div class="eyebrow">26SS · 여름 침구 카테고리 리뷰</div>
+      <h1>여름 침구 실적 & PB 진단 대시보드</h1>
+      <div class="sub">전체 침구 → 여름 옵션 성장 분해 → 3P vs PB → PB 재고·경쟁 갭까지 한 번에</div>
+    </div>
+    <div class="meta">
+      <div>조회기간 <b>2026-01-01 ~ 07-31</b></div>
+      <div>카테고리 <b>침구</b> · 순매출 기준</div>
+      <div>여름상품 선정 <b>7개월 5천만↑ + 여름옵션 보유</b></div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="k-label">침구 전체 매출 (1~7월)</div>
+      <div class="k-val tnum">523.1<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
+      <div class="k-sub"><span class="delta down">▼ 2.4%</span> 전년 535.7억</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">3P 여름/냉감 옵션</div>
+      <div class="k-val tnum">68.8<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
+      <div class="k-sub"><span class="delta up">▲ 27.9%</span> 순증 +15.0억</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">3P 사계절 옵션</div>
+      <div class="k-val tnum">109.1<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
+      <div class="k-sub"><span class="delta up">▲ 23.7%</span> 여름에도 매출 견인</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">PB 여름옵션 매출</div>
+      <div class="k-val tnum">2.80<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
+      <div class="k-sub"><span class="delta flat">3P 대비 4.1%</span> 시작 지연·7월 급락</div>
+    </div>
+  </div>
+
+  <!-- 1. 침구 전체 -->
+  <section>
+    <div class="s-head"><span class="s-num">01</span><h2>침구 전체 매출 · 25년 vs 26년</h2></div>
+    <p class="s-desc">1~7월 누적 <b>−2.4%</b>. 3·4·5월은 성장했으나 <b>2월(−15.1%)·6월(−13.6%)</b>의 낙폭이 커 전체는 소폭 역성장. 카테고리는 정체지만 그 안에서 여름상품은 성장 중이라는 것이 이번 리뷰의 출발점.</p>
+    <div class="chart-title">
+      <span>월별 매출 (억원)</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>2025</span><span><i class="swatch" style="background:var(--accent)"></i>2026</span></span>
+    </div>
+    <div id="c1" class="gbars"></div>
+    <div id="c1x" class="xlabels"></div>
+    <div id="c1g" class="growlab"></div>
+  </section>
+
+  <!-- 2. 3P 여름 성장 -->
+  <section>
+    <div class="s-head"><span class="s-num">02</span><h2>3P 여름/냉감 옵션 월별 매출</h2></div>
+    <p class="s-desc">여름 옵션을 분석한 대상은 <b>전체 침구 매출의 40%를 차지하는 상위 상품(59종)</b>. 이 상품들의 여름/냉감 옵션 매출은 전년비 <b>+27.9%(순증 +15.0억)</b> 성장했고, 특히 <b>5월(+67%)</b> 등 초·성수기 진입 구간의 성장이 두드러진다.</p>
+    <div>
+      <div class="chart-title"><span>여름/냉감 옵션 월별 매출 (억원)</span>
+        <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>2025</span><span><i class="swatch" style="background:var(--accent)"></i>2026</span></span></div>
+      <div id="c2" class="linechart"></div>
+    </div>
+  </section>
+
+  <!-- 3. 성장 원인 -->
+  <section>
+    <div class="s-head"><span class="s-num">03</span><h2>여름 매출은 왜 앞당겨졌나 — 상품별 증감 분해</h2></div>
+    <p class="s-desc">여름/냉감 순증(+15.0억)의 실체는 <b>신규 대거 출시(+18.6억)</b> + <b>기존 히트작 재점화(+9.8억)</b>가 노후화 코드의 <b>급감(−15.9억)</b>을 덮은 구조. 급감분의 대부분은 <b>시어서커 4종</b>(디어썸머·스노우썸머·썸머듀얼·슈가)에서 발생 — 25년 베스트가 반토막.</p>
+    <div class="grid3">
+      <div class="drv new">
+        <h3>신규 코드 <span class="tag">25년 0원</span></h3>
+        <div class="cap">성장 견인 · 25년엔 없던 상품</div>
+        <div class="sum new tnum">+18.6억</div>
+        <ul class="ilist" id="d-new"></ul>
+      </div>
+      <div class="drv grow">
+        <h3>기존 급성장 <span class="tag">+105%</span></h3>
+        <div class="cap">있던 여름옵션인데 26년 히트</div>
+        <div class="sum grow tnum">+9.8억</div>
+        <ul class="ilist" id="d-grow"></ul>
+      </div>
+      <div class="drv drop">
+        <h3>기존 급감 <span class="tag">−58%</span></h3>
+        <div class="cap">25년 주력 → 26년 노후화</div>
+        <div class="sum drop tnum">−15.9억</div>
+        <ul class="ilist" id="d-drop"></ul>
+      </div>
+    </div>
+    <div class="takeaway"><b>소재 트렌드.</b> 신규·기존 급성장 코드의 공통점은 <b>뒷면에 시어서커를 덧대거나 접촉냉감 소재를 결합</b>한 상품이 잘 팔렸다는 것. 작년엔 냉감이라 하면 <b>시어서커·듀라론 패드</b> 정도가 주력이었으나, 올해는 <b>시어서커보다 접촉냉감 소재의 호응이 더 컸다.</b>
+      <div class="mats">
+        <span class="old">작년: 시어서커</span><span class="old">작년: 듀라론 패드</span>
+        <span>폴리아미드</span><span>렌징텐셀 냉감</span><span>폴리+스판 냉감</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 3P vs PB -->
+  <section>
+    <div class="s-head"><span class="s-num">04</span><h2>3P vs PB · 여름옵션 매출 곡선 비교</h2></div>
+    <p class="s-desc">월별 비중 곡선은 <b>6월 피크</b>로 유사하나 PB는 <b>초여름 진입이 늦다</b>(4월 비중 3P 9% vs PB 2%). 또한 3P는 사계절 상품이 여름에도 매출을 받쳐주며 여름 옵션이 얹히는 반면, <b>PB는 여름 옵션이 오르는 동시에 사계절 옵션 낙폭이 커</b> 7월 하락 폭(−52%)이 3P(−38%)보다 가팔랐다.</p>
+    <div class="chart-title"><span>월 매출 비중 (%) — 3P vs PB 곡선 비교</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>3P 여름옵션</span><span><i class="swatch" style="background:var(--accent)"></i>PB 여름옵션</span></span></div>
+    <div id="c4" class="linechart"></div>
+    <div class="takeaway" style="margin-top:18px"><b>진단.</b> 두 곡선 모두 6월 피크로 형태는 유사하나, PB는 <b>초여름 진입이 늦고</b>(4월 3P 9% vs PB 2%) <b>7월 하락 폭(−52%)이 3P(−38%)보다 가파르다</b>. 3P는 사계절 옵션이 여름 수요를 받쳐주는 반면, PB는 사계절 옵션 낙폭이 커 여름 이후 빠르게 꺾인다.</div>
+  </section>
+
+  <!-- 5. PB 상품코드 현황 -->
+  <section>
+    <div class="s-head"><span class="s-num">05</span><h2>PB 여름 상품코드 현황 · 매출 / 판매 / 재고 / 누판율</h2></div>
+    <p class="s-desc">시리즈별 발주–입고–판매–재고 흐름. <b>누판율(누적 판매수량 ÷ 입고수량)</b>이 낮을수록 잔여재고 리스크가 크다. <b>60수(40%)</b>가 최저, <b>듀라론 패드</b>는 매출 1위지만 재고 <b>1,609</b>로 최다.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr>
+          <th>시리즈</th><th>발주수량</th><th>입고수량</th><th>입고율</th>
+          <th>판매수량</th><th>매출액(백만)</th><th>누판율</th><th>재고(8/3)</th><th>재고액(백만)<span class="tag">원가추정</span></th>
+        </tr></thead>
+        <tbody id="pbtable"></tbody>
+      </table>
+    </div>
+    <div class="foot" style="margin-top:12px;border:none;padding:0">
+      <span class="note-flag">✳</span> 쯔누가·COVE 파자마는 올해 시작재고를 발주수량으로 기재해 입고율/누판율이 왜곡됨 — 재고수량 중심으로 해석.<br>
+      · 재고액(8/3)은 재고수량 × 입고원가단가로 산출한 <b>원가 기준 추정치</b> (합계 ≈ 입고원가의 51%와 일치). 정확한 재고자산 금액은 재고관리시트 확정치로 대체 가능.
+    </div>
+  </section>
+
+  <!-- 6. 경쟁 비교 -->
+  <section>
+    <div class="s-head"><span class="s-num">06</span><h2>PB 여름 코드 vs 경쟁 코드 · 유형별 갭</h2></div>
+    <p class="s-desc">유형별 최우수 경쟁사와 비교한 부족분과 대응 방향. <b>시어서커·60수</b>는 라인업/구성의 구조적 갭, <b>알러지케어·듀라론 패드</b>는 보강으로 개선 가능.</p>
+    <div class="comp">
+      <div class="ccard">
+        <div class="ctop"><h3>시어서커</h3><span class="status watch">트렌드 하락</span></div>
+        <div class="gap">카테고리 자체가 하락세인데다 <b>디자인 다양성이 부족</b>. 경쟁사는 <b>상위 6개 상품이 전체 매출의 50%</b>를 차지할 만큼 소수 히트 디자인에 집중 — 우리는 이를 만들 라인업이 부족. 3P에서도 시어서커 4종이 −13억 급감.</div>
+        <div class="cstats">
+          <div class="cstat">매출<b>60.6백만</b></div><div class="cstat">누판율<b>65%</b></div><div class="cstat">재고<b>947</b></div>
+        </div>
+      </div>
+      <div class="ccard">
+        <div class="ctop"><h3>60수 침구세트</h3><span class="status verify">사이즈 수정</span></div>
+        <div class="gap"><b>K/LK 수요 대응 부족 → QK·LK 사이즈로 라인업 수정 필요.</b> 또한 타사는 이불+베개 <b>이베세트 구성</b>인데 우리는 <b>단품</b> — 구성 차이의 효과 검증 필요.</div>
+        <div class="cstats">
+          <div class="cstat">매출<b>16.0백만</b></div><div class="cstat">누판율<b>40%</b></div><div class="cstat">재고<b>544</b></div>
+        </div>
+      </div>
+      <div class="ccard">
+        <div class="ctop"><h3>알러지케어</h3><span class="status improve">보강 예정</span></div>
+        <div class="gap">냉감 결합 라인업 보강 예정. 현재 누판율 47%로 재고 소진 여력은 있으나 성장 상품군 대비 확장 필요.</div>
+        <div class="cstats">
+          <div class="cstat">매출<b>26.8백만</b></div><div class="cstat">누판율<b>47%</b></div><div class="cstat">재고<b>744</b></div>
+        </div>
+      </div>
+      <div class="ccard">
+        <div class="ctop"><h3>듀라론 패드</h3><span class="status improve">보강 예정</span></div>
+        <div class="gap">PB 여름 <b>매출 1위(89.2백만)</b>이자 검증된 유형. 다만 재고 <b>1,609</b>로 최다 — 사이즈·컬러 보강과 소진 전략 병행.</div>
+        <div class="cstats">
+          <div class="cstat">매출<b>89.2백만</b></div><div class="cstat">누판율<b>57%</b></div><div class="cstat">재고<b>1,609</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="takeaway"><b>내년 반영.</b> ① 시어서커 디자인 다양성 확대(경쟁사 상위 6개=50% 벤치마크) ② 60수 QK·LK 사이즈 추가 + 이베세트 구성 도입 A/B ③ 알러지케어×냉감 라인 확장 ④ 듀라론 패드 사이즈 확대 & 조기 소진.</div>
+  </section>
+
+  <div class="foot">
+    데이터 출처 · 마케팅 프로모션/실적 스프레드시트(26SS 여름 침구 RV) · 순매출 기준 · 조회 2026-01-01~07-31<br>
+    단위: 억 = 억원, 백만 = 백만원 · 누판율 = 누적 판매수량 ÷ 입고수량 · 여름/냉감·사계절은 옵션 단위 계절 분류.
+  </div>
+</div>
+
+<script>
+(function(){
+  const won=(v)=>v.toLocaleString('ko-KR');
+  // ---- grouped vertical bars ----
+  function gbars(mountId,xId,labels,s25,s26,c25,c26,fmt){
+    const mount=document.getElementById(mountId);
+    const max=Math.max(...s25,...s26)*1.12;
+    labels.forEach((lb,i)=>{
+      const col=document.createElement('div');col.className='gcol';
+      const pair=document.createElement('div');pair.className='gbar-pair';
+      const b1=document.createElement('div');b1.className='bar b25';b1.style.background=c25||'var(--steel)';
+      b1.style.height=(s25[i]/max*100)+'%';
+      const v1=document.createElement('span');v1.className='bv';v1.textContent=fmt(s25[i]);
+      const b2=document.createElement('div');b2.className='bar b26';b2.style.background=c26||'var(--accent)';
+      b2.style.height=(s26[i]/max*100)+'%';
+      const v2=document.createElement('span');v2.className='bv';v2.style.color='var(--accent)';v2.textContent=fmt(s26[i]);
+      b1.appendChild(v1);b2.appendChild(v2);pair.appendChild(b1);pair.appendChild(b2);
+      col.appendChild(pair);mount.appendChild(col);
+    });
+    const xr=document.getElementById(xId);
+    labels.forEach(lb=>{const d=document.createElement('div');d.textContent=lb;xr.appendChild(d);});
+  }
+  function grow(gId,arr){
+    const g=document.getElementById(gId);
+    arr.forEach(v=>{const d=document.createElement('div');
+      d.className=v>=0?'p':'n';d.textContent=(v>=0?'+':'')+v+'%';g.appendChild(d);});
+  }
+  const months=['1월','2월','3월','4월','5월','6월','7월'];
+
+  // ---- line chart (SVG) ----
+  function lineChart(mountId,labels,series,fmt,opts){
+    opts=opts||{}; const minL=(opts.minLabel!=null?opts.minLabel:0);
+    const W=760,H=opts.h||230,padL=44,padR=20,padT=26,padB=32;
+    const iW=W-padL-padR,iH=H-padT-padB;
+    const max=(opts.max||Math.max(...series.flatMap(s=>s.data)))*1.15||1;
+    const X=i=>padL+(labels.length<2?iW/2:iW*i/(labels.length-1));
+    const Y=v=>padT+iH-(v/max)*iH;
+    let g='';
+    const ticks=4;
+    for(let t=0;t<=ticks;t++){
+      const gv=max*t/ticks,gy=Y(gv);
+      g+=`<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W-padR}" y2="${gy.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`;
+      g+=`<text x="${padL-8}" y="${(gy+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--ink3)">${fmt(gv)}</text>`;
+    }
+    labels.forEach((lb,i)=>{ g+=`<text x="${X(i).toFixed(1)}" y="${H-11}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink3)">${lb}</text>`; });
+    series.forEach(s=>{
+      const pts=s.data.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+      g+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"${s.dash?' stroke-dasharray="5 4"':''}/>`;
+    });
+    series.forEach(s=>{
+      s.data.forEach((v,i)=>{
+        const last=i===s.data.length-1;
+        g+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${last?4.6:3}" fill="${s.color}" stroke="var(--card)" stroke-width="1.6"/>`;
+        if(s.label&&v>=minL){ g+=`<text x="${X(i).toFixed(1)}" y="${(Y(v)-9).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${s.color}">${fmt(v)}</text>`; }
+      });
+    });
+    document.getElementById(mountId).innerHTML=
+      `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" role="img">${g}</svg>`;
+  }
+
+  // 1. 침구 전체
+  gbars('c1','c1x',months,
+    [60.8,85.0,71.7,70.3,78.9,100.5,68.6],
+    [63.9,72.2,75.4,72.1,88.1,86.8,64.7],
+    null,null,v=>v.toFixed(0));
+  grow('c1g',[5,-15,5,3,12,-14,-6]);
+
+  // 2. 3P 여름/냉감 옵션 월별 (라인)
+  lineChart('c2',months,[
+    {name:'2025',color:'var(--steel)',data:[0.2,0.3,1.0,4.1,12.3,23.4,12.5]},
+    {name:'2026',color:'var(--accent)',data:[0.4,0.8,1.6,6.0,20.5,24.5,15.0],label:true}
+  ],v=>v.toFixed(1),{h:230,minLabel:0});
+
+  // 3. drivers
+  const dnew=[
+    {c:'767440',n:'카스테라 워싱 옥수수솜 냉감',v:'+5.84억'},
+    {c:'3091712',n:'옥수수솜 클래식스트라이프',v:'+3.65억'},
+    {c:'3640258',n:'슬로우모닝 통풍냉감',v:'+2.79억'},
+    {c:'2731307',n:'마이호텔 60수 옥수수솜',v:'+1.37억'},
+    {c:'3995353',n:'블랙 듀라론 아이스 트레이 패드',v:'+1.12억'},
+    {c:'4037734',n:'refine 듀라론 여름냉감 패드',v:'+0.85억'}
+  ];
+  const dgrow=[
+    {c:'2636441',n:'유어메이트 워싱 차렵',v:'+2.16억',p:'95%'},
+    {c:'2804924',n:'아이스웰 냉감패드',v:'+1.88억',p:'336%'},
+    {c:'3325720',n:'프렌치맨션 냉감 아사순면',v:'+1.48억',p:'9549%'},
+    {c:'1351971',n:'콜디 포인트라인 아이스 냉감',v:'+1.28억',p:'89%'},
+    {c:'3437601',n:'듀라에어 아이스 냉감패드',v:'+0.61억',p:'116%'}
+  ];
+  const ddrop=[
+    {c:'117560',n:'디어썸머 시어서커',v:'−5.25억',p:'−65%'},
+    {c:'2811980',n:'스노우썸머 시어서커',v:'−2.64억',p:'−64%'},
+    {c:'1418521',n:'듀라론 냉감패드',v:'−2.58억',p:'−49%'},
+    {c:'1280960',n:'썸머듀얼 시어서커',v:'−2.45억',p:'−52%'},
+    {c:'896002',n:'슈가 시어서커×순면',v:'−1.04억',p:'−62%'},
+    {c:'317477',n:'메리제인 시어서커',v:'−0.58억',p:'−47%'}
+  ];
+  function fillDrv(id,arr,cls){
+    const ul=document.getElementById(id);
+    arr.forEach(x=>{
+      const li=document.createElement('li');
+      const pct=x.p?`<span class="pct">${x.p}</span>`:'';
+      li.innerHTML=`<span class="nm"><span class="code">${x.c}</span>${x.n}</span>
+        <span><span class="amt ${cls}">${x.v}</span>${pct}</span>`;
+      ul.appendChild(li);
+    });
+  }
+  fillDrv('d-new',dnew,'p');fillDrv('d-grow',dgrow,'p');fillDrv('d-drop',ddrop,'n');
+
+  // 4. 3P vs PB 곡선 (월 매출 비중 %, 라인)
+  lineChart('c4',months,[
+    {name:'3P',color:'var(--steel)',data:[1,1,2,9,30,36,22],label:true},
+    {name:'PB',color:'var(--accent)',data:[0,0,2,2,34,42,20],label:true}
+  ],v=>v.toFixed(0)+'%',{h:260,minLabel:3});
+
+  // 5. PB table
+  const pb=[
+    {n:'듀라론 패드',order:'3,768',in:'3,706',inr:98,sold:'2,097',rev:'89.2',sell:57,stock:'1,609',val:'37.3'},
+    {n:'시어서커',order:'3,150',in:'2,675',inr:85,sold:'1,728',rev:'60.6',sell:65,stock:'947',val:'21.5'},
+    {n:'쯔누가 ✳',order:'—',in:'3,374',inr:null,sold:'910',rev:'41.4',sell:null,stock:'2,464',val:'47.8'},
+    {n:'에어핏 파자마',order:'2,400',in:'2,419',inr:101,sold:'1,390',rev:'32.1',sell:57,stock:'1,029',val:'12.1'},
+    {n:'알러지케어 세트',order:'1,308',in:'1,404',inr:107,sold:'660',rev:'26.8',sell:47,stock:'744',val:'20.6'},
+    {n:'60수 세트',order:'907',in:'906',inr:100,sold:'362',rev:'16.0',sell:40,stock:'544',val:'21.0'},
+    {n:'COVE 파자마 ✳',order:'—',in:'28',inr:null,sold:'561',rev:'13.5',sell:null,stock:'—',val:'—'}
+  ];
+  const tb=document.getElementById('pbtable');
+  function sellColor(v){return v<45?'var(--down)':v<60?'var(--accent)':'var(--up)';}
+  pb.forEach(r=>{
+    const tr=document.createElement('tr');
+    const inr=r.inr==null?'<span style="color:var(--ink3)">n/a</span>':r.inr+'%';
+    let sellCell;
+    if(r.sell==null){sellCell='<span style="color:var(--ink3)">n/a</span>';}
+    else{sellCell=`<span class="meter"><span class="track"><span class="fill" style="width:${Math.min(r.sell,100)}%;background:${sellColor(r.sell)}"></span></span>${r.sell}%</span>`;}
+    tr.innerHTML=`<td>${r.n}</td><td>${r.order}</td><td>${r.in}</td><td>${inr}</td>
+      <td>${r.sold}</td><td><b>${r.rev}</b></td><td>${sellCell}</td>
+      <td style="font-weight:700">${r.stock}</td><td>${r.val}</td>`;
+    tb.appendChild(tr);
+  });
+  const tot=document.createElement('tr');tot.className='total';
+  tot.innerHTML=`<td>합계</td><td>—</td><td>14,512</td><td>—</td><td>7,708</td><td>279.6</td><td>—</td><td>7,376</td><td>160.3</td>`;
+  tb.appendChild(tot);
+})();
+</script>
+
+</body>
+</html>
+

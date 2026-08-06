@@ -187,6 +187,15 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
 .cause .why{font-size:10px;font-weight:800;color:var(--accent);
   background:color-mix(in srgb,var(--accent) 14%,transparent);padding:1px 7px;border-radius:999px}
 @media (max-width:820px){.causes{grid-template-columns:1fr}}
+.mini-cap{font-size:12.5px;font-weight:800;color:var(--ink);margin:10px 0 8px}
+.mini-note{font-size:11.5px;color:var(--accent);font-weight:700;margin:8px 0 4px}
+table.mini{min-width:0;font-size:12px}
+table.mini thead th{padding:8px 10px}
+table.mini tbody td{padding:7px 10px}
+table.mini tbody td[rowspan]{background:var(--paper);font-size:11px;color:var(--ink3);
+  font-weight:700;vertical-align:middle;text-align:left}
+table.mini tbody td:nth-child(2){text-align:left;font-weight:600}
+table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:600}
 .foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);
   font-size:12px;color:var(--ink3);line-height:1.7}
 @media (max-width:820px){
@@ -255,7 +264,7 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
     <div class="s-head"><span class="s-num">02</span><h2>3P 여름/냉감 옵션 월별 매출</h2></div>
     <p class="s-desc">여름 옵션을 분석한 대상은 <b>전체 침구 매출의 40%를 차지하는 상위 상품(59종)</b>. 이 상품들의 여름/냉감 옵션 매출은 전년비 <b>+27.9%(순증 +15.0억)</b> 성장했고, 특히 <b>5월(+67%)</b> 등 초·성수기 진입 구간의 성장이 두드러진다.</p>
     <div>
-      <div class="chart-title"><span>여름/냉감 옵션 월별 매출 (억원)</span>
+      <div class="chart-title"><span>여름/냉감 옵션 월별 매출 (억원) · 합계 <b style="color:var(--ink3)">25년 53.8억</b> → <b style="color:var(--accent)">26년 68.8억</b> (+27.9%)</span>
         <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>2025</span><span><i class="swatch" style="background:var(--accent)"></i>2026</span></span></div>
       <div id="c2" class="linechart"></div>
     </div>
@@ -310,8 +319,8 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
           <div class="ctext">냉감 수요가 시어서커에서 <b>접촉냉감(폴리아미드·렌징텐셀·폴리+스판)</b>으로 옮겨갔으나, PB는 이전 트렌드 중심으로 기획해 신상품 적중도가 떨어졌다.</div>
         </div></div>
         <div class="cause"><div class="cn">2</div><div>
-          <div class="ctitle">사계절 옵션 폭락 <span class="why">원인 규명 필요</span></div>
-          <div class="ctext">3P는 여름에도 사계절 옵션이 매출을 일정 부분 지탱하지만, <b>PB는 여름 진입과 동시에 사계절 옵션이 급락</b> — 왜 방어가 안 되는지 규명 필요.</div>
+          <div class="ctitle">여름 진입 시 사계절 옵션 급락 <span class="why">실측 확인</span></div>
+          <div class="ctext">사계절 옵션 매출, 봄(2~4월) 평균 → 여름(5~7월) 평균: <b>PB −61~66% 급락</b>(60수 −61%·알러지 −66%) vs <b>3P는 유지</b>(60수 −20%, 알러지는 +73%로 오히려 상승). 상세는 05번 딥다이브.</div>
         </div></div>
         <div class="cause"><div class="cn">3</div><div>
           <div class="ctitle">단품 구성 (vs 세트)</div>
@@ -325,9 +334,112 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
     </div>
   </section>
 
-  <!-- 5. PB 상품코드 현황 -->
+  <!-- 5. 시리즈 딥다이브 -->
   <section>
-    <div class="s-head"><span class="s-num">05</span><h2>PB 여름 상품코드 현황 · 매출 / 판매 / 재고 / 누판율</h2></div>
+    <div class="s-head"><span class="s-num">05</span><h2>시리즈 딥다이브 · 알러지케어 / 60수 — PB vs 지정 경쟁코드</h2></div>
+    <p class="s-desc">지정 벤치마크 비교: 알러지케어 <b>PB 3640244 ↔ 3P 3640258(슬로우모닝)</b> · 60수 <b>PB 3640123 ↔ 3P 676405(베이직톤)</b>. 2026년 1~7월 순매출, 옵션 계절구분은 옵션명 기준. 절대 규모 차이는 전제하고 <b>곡선의 모양</b>과 <b>냉감 옵션의 구성 차이</b>를 본다.</p>
+
+    <div class="chart-title" style="margin-top:4px"><span>① 계절옵션 월별 곡선 — 사계절이 여름을 버티는가</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>사계절 옵션</span><span><i class="swatch" style="background:var(--accent)"></i>여름/냉감 옵션</span></span></div>
+    <div class="grid2" style="margin-bottom:6px">
+      <div>
+        <div class="mini-cap">알러지케어 · PB 3640244 (백만원)</div>
+        <div id="c5a" class="linechart"></div>
+      </div>
+      <div>
+        <div class="mini-cap">알러지케어 · 3P 3640258 슬로우모닝 (백만원)</div>
+        <div id="c5b" class="linechart"></div>
+      </div>
+      <div>
+        <div class="mini-cap">60수 · PB 3640123 (백만원)</div>
+        <div id="c5c" class="linechart"></div>
+      </div>
+      <div>
+        <div class="mini-cap">60수 · 3P 676405 베이직톤 (백만원)</div>
+        <div id="c5d" class="linechart"></div>
+      </div>
+    </div>
+    <div class="takeaway"><b>사계절 옵션, 봄(2~4월 평균) → 여름(5~7월 평균).</b> PB 알러지 32.3→11.0백만(<b style="color:var(--down)">−66%</b>) · 3P 알러지 25.3→43.7백만(<b style="color:var(--up)">+73%</b>) / PB 60수 18.7→7.3백만(<b style="color:var(--down)">−61%</b>) · 3P 60수 215.7→172.7백만(<b style="color:var(--up)">−20%</b>). 같은 여름을 지나며 <b>PB 사계절만 반토막 이하로 꺾인다</b> — 3P 사계절은 여름에도 팔리는 반면, PB 사계절은 여름 수요를 못 받는 구조.</div>
+
+    <div class="chart-title" style="margin-top:26px"><span>② 냉감 옵션 분해 — 사이즈 / 세트구성 / 색상 (2026 누적, 수량비=판매수량 비중)</span></div>
+
+    <div class="grid2">
+      <div>
+        <div class="mini-cap">알러지케어 — PB 3640244 냉감 (29.3백만 · 615개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">사이즈</td><td>SS</td><td>15.2</td><td>375</td><td>61%</td></tr>
+            <tr><td>Q</td><td>14.1</td><td>240</td><td>39%</td></tr>
+            <tr><td rowspan="2">구성</td><td>이불 단품</td><td>26.9</td><td>560</td><td>91%</td></tr>
+            <tr><td>추가 패드/커버</td><td>2.5</td><td>55</td><td>9%</td></tr>
+            <tr><td rowspan="3">색상 TOP</td><td>블루/네이비</td><td>9.2</td><td>196</td><td>32%</td></tr>
+            <tr><td>크림</td><td>8.4</td><td>171</td><td>28%</td></tr>
+            <tr><td>아이스블루</td><td>3.6</td><td>72</td><td>12%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">K/LK 없음 · 세트 없음 · 색 분산(최다 32%)</div>
+      </div>
+      <div>
+        <div class="mini-cap">알러지케어 — 3P 3640258 냉감 (159.9백만 · 2,323개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3">사이즈</td><td>Q</td><td>76.3</td><td>978</td><td>42%</td></tr>
+            <tr><td>SS</td><td>43.6</td><td>957</td><td>41%</td></tr>
+            <tr><td><b>K</b></td><td><b>40.0</b></td><td>388</td><td>17%</td></tr>
+            <tr><td rowspan="3">구성</td><td><b>이불+베개+패드 세트</b></td><td><b>101.1</b></td><td>1,029</td><td>44%</td></tr>
+            <tr><td>이불+베개 세트</td><td>55.3</td><td>1,216</td><td>52%</td></tr>
+            <tr><td>추가 패드/커버</td><td>3.4</td><td>78</td><td>3%</td></tr>
+            <tr><td rowspan="3">색상 TOP</td><td><b>블루레이크</b></td><td><b>78.6</b></td><td>1,294</td><td><b>56%</b></td></tr>
+            <tr><td>아이보리/버터</td><td>49.7</td><td>546</td><td>24%</td></tr>
+            <tr><td>민트/세이지</td><td>28.7</td><td>418</td><td>18%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">전량 세트 판매 · 패드포함 세트가 매출 63% · 히트컬러 1색 집중 56%</div>
+      </div>
+      <div>
+        <div class="mini-cap">60수 — PB 3640123 냉감 (16.5백만 · 288개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">사이즈</td><td>SS</td><td>11.0</td><td>220</td><td>76%</td></tr>
+            <tr><td>Q</td><td>5.5</td><td>68</td><td>24%</td></tr>
+            <tr><td rowspan="2">구성</td><td>이불 단품</td><td>15.7</td><td>269</td><td>93%</td></tr>
+            <tr><td>추가 패드/커버</td><td>0.8</td><td>19</td><td>7%</td></tr>
+            <tr><td rowspan="3">색상 TOP</td><td>민트/세이지</td><td>4.7</td><td>83</td><td>29%</td></tr>
+            <tr><td>아이보리</td><td>2.5</td><td>42</td><td>15%</td></tr>
+            <tr><td>화이트</td><td>0.4</td><td>10</td><td>3%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">K/LK 없음 · 단품 93% · 화이트 비중 3%</div>
+      </div>
+      <div>
+        <div class="mini-cap">60수 — 3P 676405 냉감 (260.5백만 · 2,865개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="4">사이즈</td><td>Q/K겸용</td><td>90.2</td><td>830</td><td>29%</td></tr>
+            <tr><td>SS</td><td>72.9</td><td>1,099</td><td>38%</td></tr>
+            <tr><td><b>LK</b></td><td><b>74.2</b></td><td>621</td><td>22%</td></tr>
+            <tr><td>패드 Q·K</td><td>23.2</td><td>315</td><td>11%</td></tr>
+            <tr><td rowspan="2">구성</td><td><b>이불+베개 세트</b></td><td><b>212.4</b></td><td>2,208</td><td>77%</td></tr>
+            <tr><td>추가 냉감패드</td><td>48.1</td><td>657</td><td>23%</td></tr>
+            <tr><td rowspan="3">색상 TOP</td><td><b>화이트</b></td><td><b>150.1</b></td><td>1,657</td><td><b>58%</b></td></tr>
+            <tr><td>베이지</td><td>52.2</td><td>562</td><td>20%</td></tr>
+            <tr><td>블루/네이비</td><td>30.8</td><td>336</td><td>12%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">큰 사이즈(Q/K겸용+LK+K패드)가 매출 72% · 호텔침구=화이트 58%</div>
+      </div>
+    </div>
+
+    <div class="takeaway"><b>냉감 옵션의 3대 구조 차이.</b> ① <b>사이즈</b>: 3P는 Q/K겸용·LK·K가 냉감 매출의 60~72%인데 PB는 SS·Q뿐 ② <b>구성</b>: 3P는 세트(이불+베개, +패드) 77~97% vs PB는 단품 91~93% ③ <b>색상</b>: 3P는 히트컬러 1색에 56~58% 집중(60수=화이트, 알러지=블루레이크) vs PB는 최다 색상도 29~32%로 분산 — 시어서커의 "상위 6개=50%" 인사이트와 동일 패턴.</div>
+  </section>
+
+  <!-- 6. PB 상품코드 현황 -->
+  <section>
+    <div class="s-head"><span class="s-num">06</span><h2>PB 여름 상품코드 현황 · 매출 / 판매 / 재고 / 누판율</h2></div>
     <p class="s-desc">시리즈별 발주–입고–판매–재고 흐름. <b>누판율(누적 판매수량 ÷ 입고수량)</b>이 낮을수록 잔여재고 리스크가 크다. <b>60수(40%)</b>가 최저, <b>듀라론 패드</b>는 매출 1위지만 재고 <b>1,609</b>로 최다.</p>
     <div class="tbl-scroll">
       <table>
@@ -344,9 +456,9 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
     </div>
   </section>
 
-  <!-- 6. 경쟁 비교 -->
+  <!-- 7. 경쟁 비교 -->
   <section>
-    <div class="s-head"><span class="s-num">06</span><h2>PB 여름 코드 vs 경쟁 코드 · 유형별 갭</h2></div>
+    <div class="s-head"><span class="s-num">07</span><h2>PB 여름 코드 vs 경쟁 코드 · 유형별 갭</h2></div>
     <p class="s-desc">유형별 최우수 경쟁사와 비교한 부족분과 대응 방향. <b>시어서커·60수</b>는 라인업/구성의 구조적 갭, <b>알러지케어·듀라론 패드</b>는 보강으로 개선 가능.</p>
     <div class="comp">
       <div class="ccard">
@@ -495,6 +607,20 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
     });
   }
   fillDrv('d-new',dnew,'p');fillDrv('d-grow',dgrow,'p');fillDrv('d-drop',ddrop,'n');
+
+  // 5. 시리즈 딥다이브 — 사계절 vs 여름/냉감 (2026, 백만원)
+  const dd=[
+    ['c5a',[16,29,43,25,15,8,10],[0,0,0,0,13,10,6]],          // PB 알러지 3640244
+    ['c5b',[10,12,23,41,55,45,31],[1,2,5,14,56,53,29]],       // 3P 알러지 3640258
+    ['c5c',[3,17,23,16,9,7,6],[0,0,0,0,7,6,4]],               // PB 60수 3640123
+    ['c5d',[196,218,221,208,180,175,163],[0,0,7,31,73,91,58]] // 3P 60수 676405
+  ];
+  dd.forEach(([id,four,summer])=>{
+    lineChart(id,months,[
+      {name:'사계절',color:'var(--steel)',data:four,label:true},
+      {name:'여름/냉감',color:'var(--accent)',data:summer}
+    ],v=>v.toFixed(0),{h:200,minLabel:1});
+  });
 
   // 4. 3P vs PB 곡선 (월 매출 비중 %, 라인)
   lineChart('c4',months,[

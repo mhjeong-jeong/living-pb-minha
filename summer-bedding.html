@@ -177,6 +177,16 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
   border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
   padding:4px 11px;border-radius:999px}
 .mats .old{color:var(--ink3);background:var(--chip);border-color:var(--line)}
+.causes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.cause{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--paper);
+  display:flex;gap:12px;align-items:flex-start}
+.cause .cn{flex:none;width:24px;height:24px;border-radius:7px;background:var(--down);color:#fff;
+  font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.cause .ctitle{font-weight:800;font-size:13.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cause .ctext{font-size:12.5px;color:var(--ink2);line-height:1.5}
+.cause .why{font-size:10px;font-weight:800;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 14%,transparent);padding:1px 7px;border-radius:999px}
+@media (max-width:820px){.causes{grid-template-columns:1fr}}
 .foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);
   font-size:12px;color:var(--ink3);line-height:1.7}
 @media (max-width:820px){
@@ -291,6 +301,28 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
       <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>3P 여름옵션</span><span><i class="swatch" style="background:var(--accent)"></i>PB 여름옵션</span></span></div>
     <div id="c4" class="linechart"></div>
     <div class="takeaway" style="margin-top:18px"><b>진단.</b> 두 곡선 모두 6월 피크로 형태는 유사하나, PB는 <b>초여름 진입이 늦고</b>(4월 3P 9% vs PB 2%) <b>7월 하락 폭(−52%)이 3P(−38%)보다 가파르다</b>. 3P는 사계절 옵션이 여름 수요를 받쳐주는 반면, PB는 사계절 옵션 낙폭이 커 여름 이후 빠르게 꺾인다.</div>
+
+    <div style="margin-top:24px">
+      <div class="chart-title"><span>PB가 3P를 못 따라간 4대 원인</span></div>
+      <div class="causes">
+        <div class="cause"><div class="cn">1</div><div>
+          <div class="ctitle">여름 트렌드 소재 변화 → 적중도 하락</div>
+          <div class="ctext">냉감 수요가 시어서커에서 <b>접촉냉감(폴리아미드·렌징텐셀·폴리+스판)</b>으로 옮겨갔으나, PB는 이전 트렌드 중심으로 기획해 신상품 적중도가 떨어졌다.</div>
+        </div></div>
+        <div class="cause"><div class="cn">2</div><div>
+          <div class="ctitle">사계절 옵션 폭락 <span class="why">원인 규명 필요</span></div>
+          <div class="ctext">3P는 여름에도 사계절 옵션이 매출을 일정 부분 지탱하지만, <b>PB는 여름 진입과 동시에 사계절 옵션이 급락</b> — 왜 방어가 안 되는지 규명 필요.</div>
+        </div></div>
+        <div class="cause"><div class="cn">3</div><div>
+          <div class="ctitle">단품 구성 (vs 세트)</div>
+          <div class="ctext">경쟁사는 이불+베개 <b>이베세트 구성</b>이 일반적이나, PB는 <b>단품 위주</b>라 객단가·구매 편의에서 불리.</div>
+        </div></div>
+        <div class="cause"><div class="cn">4</div><div>
+          <div class="ctitle">큰 사이즈(K/LK) 부재</div>
+          <div class="ctext">냉감은 <b>패드 구매 비중이 높은데</b>, PB는 <b>K·LK 등 큰 사이즈 라인업이 부족</b>해 대형 수요를 놓쳤다.</div>
+        </div></div>
+      </div>
+    </div>
   </section>
 
   <!-- 5. PB 상품코드 현황 -->

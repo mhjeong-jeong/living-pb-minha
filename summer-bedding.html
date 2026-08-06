@@ -253,9 +253,9 @@ table.mini tr.cmprow td{background:var(--paper);color:var(--accent);font-weight:
       <div class="k-sub"><span class="delta up">▲ 23.7%</span> 여름에도 매출 견인</div>
     </div>
     <div class="kpi">
-      <div class="k-label">PB 여름옵션 매출 (refine·basic 5개 코드)</div>
-      <div class="k-val tnum">2.1<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
-      <div class="k-sub"><span class="delta flat">3P 대비 3.1%</span> 진입 지연·5~7월 집중</div>
+      <div class="k-label">PB 여름옵션 매출 (refine 4종 + 쯔누가 4코드)</div>
+      <div class="k-val tnum">2.2<span style="font-size:15px;font-weight:600;color:var(--ink3)"> 억</span></div>
+      <div class="k-sub"><span class="delta flat">3P 대비 3.2%</span> 진입 지연·5~7월 집중</div>
     </div>
   </div>
 
@@ -318,8 +318,8 @@ table.mini tr.cmprow td{background:var(--paper);color:var(--accent);font-weight:
   <!-- 4. 3P vs PB -->
   <section>
     <div class="s-head"><span class="s-num">04</span><h2>3P vs PB · 여름옵션 매출 곡선 비교</h2></div>
-    <p class="s-desc">양쪽 모두 <b>여름/냉감 옵션 매출 기준</b>. 곡선은 6월 피크로 유사하고 7월 전월비 하락도 PB −40% vs 3P −38%로 비슷하다 — 차이는 <b>진입 시점</b>이다. 3P는 4월에 이미 비중 9%를 파는데 <b>PB는 4월 0.4%로 사실상 5월에야 판매를 시작</b>, 여름옵션 매출의 <b>5~7월 집중도가 PB 100% vs 3P 88%</b>.</p>
-    <div class="chart-title"><span>월 매출 비중 (%) — 3P vs PB 곡선 비교 · 여름옵션 매출 <b style="color:var(--ink)">3P 68.8억</b> · <b style="color:var(--accent)">PB 2.1억</b></span>
+    <p class="s-desc">양쪽 모두 <b>여름/냉감 옵션 매출 기준</b>. 곡선은 6월 피크로 유사하고 7월 전월비 하락도 PB −37% vs 3P −38%로 비슷하다 — 차이는 <b>진입 시점</b>이다. 3P는 4월에 이미 비중 9%를 파는데 <b>PB는 4월 0.4%로 사실상 5월에야 판매를 시작</b>, 여름옵션 매출의 <b>5~7월 집중도가 PB 100% vs 3P 88%</b>.</p>
+    <div class="chart-title"><span>월 매출 비중 (%) — 3P vs PB 곡선 비교 · 여름옵션 매출 <b style="color:var(--ink)">3P 68.8억</b> · <b style="color:var(--accent)">PB 2.2억</b></span>
       <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>3P 여름옵션</span><span><i class="swatch" style="background:var(--accent)"></i>PB 여름옵션</span></span></div>
     <div id="c4" class="linechart"></div>
 
@@ -741,12 +741,13 @@ table.mini tr.cmprow td{background:var(--paper);color:var(--accent);font-weight:
   // 4. 3P vs PB 곡선 (월 매출 비중 %, 라인)
   lineChart('c4',months,[
     {name:'3P',color:'var(--steel)',data:[1,1,2,9,30,36,22],label:true},
-    {name:'PB',color:'var(--accent)',data:[0,0,0,0,38,39,23],label:true}
+    {name:'PB',color:'var(--accent)',data:[0,0,0,0,35,40,25],label:true}
   ],v=>v.toFixed(0)+'%',{h:260,minLabel:3});
 
   
 })();
 </script>
+
 
 
 

@@ -188,6 +188,13 @@ tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid v
   background:color-mix(in srgb,var(--accent) 14%,transparent);padding:1px 7px;border-radius:999px}
 @media (max-width:820px){.causes{grid-template-columns:1fr}}
 .mini-cap{font-size:12.5px;font-weight:800;color:var(--ink);margin:10px 0 8px}
+.sub-h{font-size:16px;font-weight:800;margin:28px 0 2px;padding-top:20px;
+  border-top:1px dashed var(--line);display:flex;align-items:center;gap:9px}
+.sub-h:first-of-type{border-top:none;padding-top:6px;margin-top:10px}
+.sub-h .lch{flex:none;width:22px;height:22px;border-radius:6px;background:var(--accent);
+  color:#fff;font-family:var(--mono);font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center}
+.sub-h .codes{font-size:11.5px;color:var(--ink3);font-weight:600;font-family:var(--mono)}
 .mini-note{font-size:11.5px;color:var(--accent);font-weight:700;margin:8px 0 4px}
 table.mini{min-width:0;font-size:12px}
 table.mini thead th{padding:8px 10px}
@@ -305,11 +312,11 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
   <!-- 4. 3P vs PB -->
   <section>
     <div class="s-head"><span class="s-num">04</span><h2>3P vs PB · 여름옵션 매출 곡선 비교</h2></div>
-    <p class="s-desc">월별 비중 곡선은 <b>6월 피크</b>로 유사하나 PB는 <b>초여름 진입이 늦다</b>(4월 비중 3P 9% vs PB 2%). 또한 3P는 사계절 상품이 여름에도 매출을 받쳐주며 여름 옵션이 얹히는 반면, <b>PB는 여름 옵션이 오르는 동시에 사계절 옵션 낙폭이 커</b> 7월 하락 폭(−52%)이 3P(−38%)보다 가팔랐다.</p>
+    <p class="s-desc">월별 비중 곡선은 <b>6월 피크</b>로 유사하나 PB는 <b>초여름 진입이 늦고</b>(4월 비중 3P 9% vs PB 2%) <b>7월 하락 폭(−52%)이 3P(−38%)보다 가팔라</b> 판매 사이클이 짧다 — 여름옵션 매출의 5~7월 집중도 PB 96% vs 3P 88%. ※ 이 섹션은 <b>여름옵션 매출만</b> 비교한다. 계절옵션(사계절 포함) 관점은 05번 딥다이브에서 다룬다.</p>
     <div class="chart-title"><span>월 매출 비중 (%) — 3P vs PB 곡선 비교</span>
       <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>3P 여름옵션</span><span><i class="swatch" style="background:var(--accent)"></i>PB 여름옵션</span></span></div>
     <div id="c4" class="linechart"></div>
-    <div class="takeaway" style="margin-top:18px"><b>진단.</b> 두 곡선 모두 6월 피크로 형태는 유사하나, PB는 <b>초여름 진입이 늦고</b>(4월 3P 9% vs PB 2%) <b>7월 하락 폭(−52%)이 3P(−38%)보다 가파르다</b>. 3P는 사계절 옵션이 여름 수요를 받쳐주는 반면, PB는 사계절 옵션 낙폭이 커 여름 이후 빠르게 꺾인다.</div>
+    <div class="takeaway" style="margin-top:18px"><b>진단.</b> 두 곡선 모두 6월 피크로 형태는 유사하나, PB는 <b>초여름 진입이 늦고</b>(4월 3P 9% vs PB 2%) <b>7월 하락 폭(−52%)이 3P(−38%)보다 가파르다</b>. 결과적으로 PB 여름옵션 매출의 <b>96%가 5~7월 석 달에 집중</b>(3P 88%)되는 짧은 판매 사이클이 특징.</div>
 
     <div style="margin-top:24px">
       <div class="chart-title"><span>PB가 3P를 못 따라간 4대 원인</span></div>
@@ -319,8 +326,8 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
           <div class="ctext">냉감 수요가 시어서커에서 <b>접촉냉감(폴리아미드·렌징텐셀·폴리+스판)</b>으로 옮겨갔으나, PB는 이전 트렌드 중심으로 기획해 신상품 적중도가 떨어졌다.</div>
         </div></div>
         <div class="cause"><div class="cn">2</div><div>
-          <div class="ctitle">여름 진입 시 사계절 옵션 급락 <span class="why">실측 확인</span></div>
-          <div class="ctext">사계절 옵션 매출, 봄(2~4월) 평균 → 여름(5~7월) 평균: <b>PB −61~66% 급락</b>(60수 −61%·알러지 −66%) vs <b>3P는 유지</b>(60수 −20%, 알러지는 +73%로 오히려 상승). 상세는 05번 딥다이브.</div>
+          <div class="ctitle">늦은 진입 · 짧은 판매 사이클 <span class="why">여름옵션 기준</span></div>
+          <div class="ctext">PB 여름옵션은 <b>4월 비중 2%(3P 9%)</b>로 한 달 늦게 시작해 <b>5~7월에 96%(3P 88%)가 몰린다.</b> 사계절 옵션 이슈는 여름옵션과 별개 데이터이므로 <b>05번 딥다이브</b>에서 계절옵션 전체 기준으로 분석.</div>
         </div></div>
         <div class="cause"><div class="cn">3</div><div>
           <div class="ctitle">단품 구성 (vs 세트)</div>
@@ -336,36 +343,20 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
 
   <!-- 5. 시리즈 딥다이브 -->
   <section>
-    <div class="s-head"><span class="s-num">05</span><h2>시리즈 딥다이브 · 알러지케어 / 60수 — PB vs 지정 경쟁코드</h2></div>
-    <p class="s-desc">지정 벤치마크 비교: 알러지케어 <b>PB 3640244 ↔ 3P 3640258(슬로우모닝)</b> · 60수 <b>PB 3640123 ↔ 3P 676405(베이직톤)</b>. 2026년 1~7월 순매출, 옵션 계절구분은 옵션명 기준. 절대 규모 차이는 전제하고 <b>곡선의 모양</b>과 <b>냉감 옵션의 구성 차이</b>를 본다.</p>
+    <div class="s-head"><span class="s-num">05</span><h2>시리즈 딥다이브 · 유형별 PB vs 지정 경쟁코드</h2></div>
+    <p class="s-desc">지정 벤치마크 4개 페어 비교 — 알러지케어 <b>3640244↔3640258</b> · 60수 <b>3640123↔676405</b> · 시어서커 <b>4037745↔117560</b> · 듀라론 패드 <b>4037734↔1403437</b>. 2026년 1~7월 순매출, 계절구분은 옵션명 기준. 절대 규모 차이는 전제하고 <b>곡선의 모양</b>과 <b>냉감 옵션의 사이즈·구성·색상 차이</b>를 본다.</p>
 
-    <div class="chart-title" style="margin-top:4px"><span>① 계절옵션 월별 곡선 — 사계절이 여름을 버티는가</span>
+        <!-- A. 알러지케어 -->
+    <div class="sub-h"><span class="lch">A</span>알러지케어 <span class="codes">PB 3640244 ↔ 3P 3640258 슬로우모닝</span></div>
+    <div class="chart-title" style="margin-top:10px"><span>계절옵션 월별 곡선 (백만원)</span>
       <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>사계절 옵션</span><span><i class="swatch" style="background:var(--accent)"></i>여름/냉감 옵션</span></span></div>
-    <div class="grid2" style="margin-bottom:6px">
-      <div>
-        <div class="mini-cap">알러지케어 · PB 3640244 (백만원)</div>
-        <div id="c5a" class="linechart"></div>
-      </div>
-      <div>
-        <div class="mini-cap">알러지케어 · 3P 3640258 슬로우모닝 (백만원)</div>
-        <div id="c5b" class="linechart"></div>
-      </div>
-      <div>
-        <div class="mini-cap">60수 · PB 3640123 (백만원)</div>
-        <div id="c5c" class="linechart"></div>
-      </div>
-      <div>
-        <div class="mini-cap">60수 · 3P 676405 베이직톤 (백만원)</div>
-        <div id="c5d" class="linechart"></div>
-      </div>
-    </div>
-    <div class="takeaway"><b>사계절 옵션, 봄(2~4월 평균) → 여름(5~7월 평균).</b> PB 알러지 32.3→11.0백만(<b style="color:var(--down)">−66%</b>) · 3P 알러지 25.3→43.7백만(<b style="color:var(--up)">+73%</b>) / PB 60수 18.7→7.3백만(<b style="color:var(--down)">−61%</b>) · 3P 60수 215.7→172.7백만(<b style="color:var(--up)">−20%</b>). 같은 여름을 지나며 <b>PB 사계절만 반토막 이하로 꺾인다</b> — 3P 사계절은 여름에도 팔리는 반면, PB 사계절은 여름 수요를 못 받는 구조.</div>
-
-    <div class="chart-title" style="margin-top:26px"><span>② 냉감 옵션 분해 — 사이즈 / 세트구성 / 색상 (2026 누적, 수량비=판매수량 비중)</span></div>
-
     <div class="grid2">
+      <div><div class="mini-cap">PB 3640244</div><div id="c5a" class="linechart"></div></div>
+      <div><div class="mini-cap">3P 3640258 슬로우모닝</div><div id="c5b" class="linechart"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
       <div>
-        <div class="mini-cap">알러지케어 — PB 3640244 냉감 (29.3백만 · 615개)</div>
+        <div class="mini-cap">PB 냉감 옵션 분해 (29.3백만 · 615개)</div>
         <div class="tbl-scroll"><table class="mini">
           <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
           <tbody>
@@ -381,7 +372,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">K/LK 없음 · 세트 없음 · 색 분산(최다 32%)</div>
       </div>
       <div>
-        <div class="mini-cap">알러지케어 — 3P 3640258 냉감 (159.9백만 · 2,323개)</div>
+        <div class="mini-cap">3P 냉감 옵션 분해 (159.9백만 · 2,323개)</div>
         <div class="tbl-scroll"><table class="mini">
           <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
           <tbody>
@@ -396,10 +387,22 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
             <tr><td>민트/세이지</td><td>28.7</td><td>418</td><td>18%</td></tr>
           </tbody>
         </table></div>
-        <div class="mini-note">전량 세트 판매 · 패드포함 세트가 매출 63% · 히트컬러 1색 집중 56%</div>
+        <div class="mini-note">전량 세트 · 패드포함 세트 = 매출 63% · 히트컬러 1색 56%</div>
       </div>
+    </div>
+    <div class="takeaway"><b>알러지케어.</b> 사계절 옵션이 봄(2~4월 평균)→여름(5~7월 평균) PB <b style="color:var(--down)">−66%</b>(32.3→11.0백만) vs 3P <b style="color:var(--up)">+73%</b>(25.3→43.7백만) — 3P는 사계절도 여름에 더 팔린다. 냉감 갭은 <b>K 사이즈·패드포함 세트·히트컬러 집중</b>의 부재.</div>
+
+    <!-- B. 60수 -->
+    <div class="sub-h"><span class="lch">B</span>60수 침구세트 <span class="codes">PB 3640123 ↔ 3P 676405 베이직톤</span></div>
+    <div class="chart-title" style="margin-top:10px"><span>계절옵션 월별 곡선 (백만원)</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>사계절 옵션</span><span><i class="swatch" style="background:var(--accent)"></i>여름/냉감 옵션</span></span></div>
+    <div class="grid2">
+      <div><div class="mini-cap">PB 3640123</div><div id="c5c" class="linechart"></div></div>
+      <div><div class="mini-cap">3P 676405 베이직톤</div><div id="c5d" class="linechart"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
       <div>
-        <div class="mini-cap">60수 — PB 3640123 냉감 (16.5백만 · 288개)</div>
+        <div class="mini-cap">PB 냉감 옵션 분해 (16.5백만 · 288개)</div>
         <div class="tbl-scroll"><table class="mini">
           <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
           <tbody>
@@ -412,10 +415,10 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
             <tr><td>화이트</td><td>0.4</td><td>10</td><td>3%</td></tr>
           </tbody>
         </table></div>
-        <div class="mini-note">K/LK 없음 · 단품 93% · 화이트 비중 3%</div>
+        <div class="mini-note">K/LK 없음 · 단품 93% · 화이트 3%</div>
       </div>
       <div>
-        <div class="mini-cap">60수 — 3P 676405 냉감 (260.5백만 · 2,865개)</div>
+        <div class="mini-cap">3P 냉감 옵션 분해 (260.5백만 · 2,865개)</div>
         <div class="tbl-scroll"><table class="mini">
           <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
           <tbody>
@@ -430,11 +433,102 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
             <tr><td>블루/네이비</td><td>30.8</td><td>336</td><td>12%</td></tr>
           </tbody>
         </table></div>
-        <div class="mini-note">큰 사이즈(Q/K겸용+LK+K패드)가 매출 72% · 호텔침구=화이트 58%</div>
+        <div class="mini-note">큰 사이즈(Q/K겸용·LK·K패드) = 매출 72% · 호텔침구=화이트 58%</div>
       </div>
     </div>
+    <div class="takeaway"><b>60수.</b> 사계절 옵션 봄→여름 PB <b style="color:var(--down)">−61%</b>(18.7→7.3백만) vs 3P <b style="color:var(--up)">−20%</b>(215.7→172.7백만, 유지) — 3P 사계절(호텔침구 상시수요)은 여름을 버틴다. 냉감 갭은 <b>QK·LK 사이즈(3P 매출 72%)·세트 구성·화이트 컬러(58% vs 3%)</b>.</div>
 
-    <div class="takeaway"><b>냉감 옵션의 3대 구조 차이.</b> ① <b>사이즈</b>: 3P는 Q/K겸용·LK·K가 냉감 매출의 60~72%인데 PB는 SS·Q뿐 ② <b>구성</b>: 3P는 세트(이불+베개, +패드) 77~97% vs PB는 단품 91~93% ③ <b>색상</b>: 3P는 히트컬러 1색에 56~58% 집중(60수=화이트, 알러지=블루레이크) vs PB는 최다 색상도 29~32%로 분산 — 시어서커의 "상위 6개=50%" 인사이트와 동일 패턴.</div>
+    <!-- C. 시어서커 -->
+    <div class="sub-h"><span class="lch">C</span>시어서커 <span class="codes">PB 4037745 ↔ 3P 117560 디어썸머</span></div>
+    <div class="chart-title" style="margin-top:10px"><span>여름/냉감 옵션 월별 매출 (백만원) — 여름 전용 시리즈</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--steel)"></i>사계절 옵션</span><span><i class="swatch" style="background:var(--accent)"></i>여름/냉감 옵션</span></span></div>
+    <div class="grid2">
+      <div><div class="mini-cap">PB 4037745</div><div id="c5e" class="linechart"></div></div>
+      <div><div class="mini-cap">3P 117560 디어썸머</div><div id="c5f" class="linechart"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <div class="mini-cap">PB 냉감 옵션 분해 (59.4백만 · 1,013개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3">사이즈</td><td>SS</td><td>36.3</td><td>730</td><td>72%</td></tr>
+            <tr><td>Q</td><td>16.3</td><td>169</td><td>17%</td></tr>
+            <tr><td>Q/K겸용</td><td>6.8</td><td>114</td><td>11%</td></tr>
+            <tr><td rowspan="3">구성</td><td>패드포함 풀세트</td><td>33.4</td><td>412</td><td>41%</td></tr>
+            <tr><td>이불+베개 세트</td><td>25.4</td><td>582</td><td>57%</td></tr>
+            <tr><td>추가 패드</td><td>0.6</td><td>19</td><td>2%</td></tr>
+            <tr><td rowspan="3">색상 (전체 3종)</td><td>블루스트라이프</td><td>24.8</td><td>419</td><td>41%</td></tr>
+            <tr><td>그린스트라이프</td><td>18.3</td><td>311</td><td>31%</td></tr>
+            <tr><td>베이지스트라이프</td><td>15.7</td><td>264</td><td>26%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">컬러 3종뿐 · K 단독/LK 없음 · 5월 판매 시작</div>
+      </div>
+      <div>
+        <div class="mini-cap">3P 냉감 옵션 분해 (277.3백만 · 4,291개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3">사이즈</td><td>SS</td><td>129.4</td><td>2,658</td><td>62%</td></tr>
+            <tr><td>Q</td><td>87.8</td><td>1,076</td><td>25%</td></tr>
+            <tr><td><b>K</b></td><td><b>60.1</b></td><td>557</td><td>13%</td></tr>
+            <tr><td rowspan="2">구성</td><td><b>패드포함 세트</b></td><td><b>191.3</b></td><td>2,170</td><td>51%</td></tr>
+            <tr><td>이불+베개 세트</td><td>84.6</td><td>2,088</td><td>49%</td></tr>
+            <tr><td rowspan="3">색상 TOP (20종+)</td><td>프렌치룩</td><td>41.3</td><td>647</td><td>15%</td></tr>
+            <tr><td>블루샌드</td><td>39.4</td><td>584</td><td>14%</td></tr>
+            <tr><td>카프리선셋</td><td>36.0</td><td>501</td><td>12%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">컬러 20종+ 롱테일(상위 4컬러=51%) · 패드포함 세트 = 매출 69% · 4월 선판매 25백만</div>
+      </div>
+    </div>
+    <div class="takeaway"><b>시어서커.</b> 구성(패드포함 세트)은 PB도 41%로 대응됨 — 갭의 본질은 <b>① 컬러 폭: 3종 vs 20종+</b>(잘 팔리는 집은 넓게 깔고 상위 4컬러 51%로 수렴) <b>② K 사이즈</b>(3P 단독 K 13%·60.1백만 vs PB는 Q/K겸용 11%뿐) <b>③ 진입 시점</b>(3P 4월 25백만 선판매 vs PB 5월 시작).</div>
+
+    <!-- D. 듀라론 패드 -->
+    <div class="sub-h"><span class="lch">D</span>듀라론 패드 <span class="codes">PB 4037734 ↔ 3P 1403437 헬로우슬립</span></div>
+    <div class="chart-title" style="margin-top:10px"><span>여름/냉감 옵션 월별 매출 (백만원) — 여름 전용 시리즈</span>
+      <span class="legend"><span><i class="swatch" style="background:var(--accent)"></i>여름/냉감 옵션</span></span></div>
+    <div class="grid2">
+      <div><div class="mini-cap">PB 4037734</div><div id="c5g" class="linechart"></div></div>
+      <div><div class="mini-cap">3P 1403437 헬로우슬립</div><div id="c5h" class="linechart"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <div class="mini-cap">PB 냉감 옵션 분해 (85.1백만 · 1,967개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">사이즈</td><td>SS</td><td>50.3</td><td>1,267</td><td>64%</td></tr>
+            <tr><td>Q</td><td>34.8</td><td>700</td><td>36%</td></tr>
+            <tr><td rowspan="1">구성</td><td>패드 단품</td><td>85.1</td><td>1,967</td><td>100%</td></tr>
+            <tr><td rowspan="3">색상 (전체 3종)</td><td>블루</td><td>33.6</td><td>777</td><td>40%</td></tr>
+            <tr><td>화이트</td><td>30.1</td><td>694</td><td>35%</td></tr>
+            <tr><td>베이지</td><td>21.4</td><td>496</td><td>25%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">K/LK 없음 · 5월 판매 시작</div>
+      </div>
+      <div>
+        <div class="mini-cap">3P 냉감 옵션 분해 (307.9백만 · 6,532개)</div>
+        <div class="tbl-scroll"><table class="mini">
+          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3">사이즈</td><td>SS</td><td>124.5</td><td>3,120</td><td>48%</td></tr>
+            <tr><td>Q</td><td>100.7</td><td>2,026</td><td>31%</td></tr>
+            <tr><td><b>K</b></td><td><b>82.7</b></td><td>1,386</td><td><b>21%</b></td></tr>
+            <tr><td rowspan="1">구성</td><td>패드 단품</td><td>307.9</td><td>6,532</td><td>100%</td></tr>
+            <tr><td rowspan="3">색상 TOP (4종)</td><td><b>화이트</b></td><td><b>139.9</b></td><td>2,927</td><td><b>45%</b></td></tr>
+            <tr><td>블루</td><td>70.6</td><td>1,521</td><td>23%</td></tr>
+            <tr><td>그레이</td><td>60.8</td><td>1,307</td><td>20%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mini-note">K만 82.7백만 ≈ PB 듀라론 전체(85.1) · 1월부터 상시 판매</div>
+      </div>
+    </div>
+    <div class="takeaway"><b>듀라론 패드.</b> 구성(패드 단품)·컬러 구조는 유사 — 갭은 <b>① K 사이즈 부재: 3P의 K만 82.7백만으로 PB 전체(85.1백만)와 맞먹음</b> <b>② 진입 시점: 3P는 1월부터 팔리고 4월 20백만 램프업, PB는 5월 시작</b> ③ 3P는 화이트 1위(45%)·그레이 보유, PB는 블루 1위·그레이 없음.</div>
+
+    <div class="takeaway" style="border-left-color:var(--down)"><b>4개 유형 공통 결론.</b> ① <b>K/LK 큰 사이즈 부재</b>(모든 유형 공통 — 3P는 큰 사이즈가 냉감 매출 13~72%) ② <b>세트 구성 부재</b>(알러지·60수 — PB 단품 91~93% vs 3P 세트 77~96%) ③ <b>컬러 전략</b>(3P는 넓게 깔거나 히트컬러에 45~58% 집중, PB는 3종 협소 또는 분산) ④ <b>진입 1개월+ 지연</b>(3P 3~4월 램프업 vs PB 5월 시작).</div>
   </section>
 
   <!-- 6. PB 상품코드 현황 -->
@@ -613,13 +707,17 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
     ['c5a',[16,29,43,25,15,8,10],[0,0,0,0,13,10,6]],          // PB 알러지 3640244
     ['c5b',[10,12,23,41,55,45,31],[1,2,5,14,56,53,29]],       // 3P 알러지 3640258
     ['c5c',[3,17,23,16,9,7,6],[0,0,0,0,7,6,4]],               // PB 60수 3640123
-    ['c5d',[196,218,221,208,180,175,163],[0,0,7,31,73,91,58]] // 3P 60수 676405
+    ['c5d',[196,218,221,208,180,175,163],[0,0,7,31,73,91,58]],// 3P 60수 676405
+    ['c5e',null,[0,0,0,0,22,22,15]],                          // PB 시어서커 4037745
+    ['c5f',[0,0,0,2,4,4,2],[0,0,0,25,116,93,44]],             // 3P 시어서커 117560
+    ['c5g',null,[0,0,0,0,29,38,18]],                          // PB 듀라론 4037734
+    ['c5h',null,[1,2,4,20,86,116,80]]                         // 3P 듀라론 1403437
   ];
   dd.forEach(([id,four,summer])=>{
-    lineChart(id,months,[
-      {name:'사계절',color:'var(--steel)',data:four,label:true},
-      {name:'여름/냉감',color:'var(--accent)',data:summer}
-    ],v=>v.toFixed(0),{h:200,minLabel:1});
+    const s=[];
+    if(four) s.push({name:'사계절',color:'var(--steel)',data:four,label:true});
+    s.push({name:'여름/냉감',color:'var(--accent)',data:summer,label:(!four||id==='c5f')});
+    lineChart(id,months,s,v=>v.toFixed(0),{h:200,minLabel:1});
   });
 
   // 4. 3P vs PB 곡선 (월 매출 비중 %, 라인)
@@ -656,6 +754,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
   tb.appendChild(tot);
 })();
 </script>
+
 
 </body>
 </html>

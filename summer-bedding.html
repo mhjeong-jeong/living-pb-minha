@@ -139,15 +139,14 @@ svg text{font-family:var(--sans)}
 /* table */
 .tbl-scroll{overflow-x:auto;margin-top:6px;border:1px solid var(--line);border-radius:12px}
 table{border-collapse:collapse;width:100%;font-size:13px;min-width:660px}
-thead th{background:var(--paper);text-align:right;padding:11px 14px;font-size:11.5px;
+thead th{background:var(--paper);text-align:left;padding:11px 14px;font-size:11.5px;
   font-weight:700;color:var(--ink3);letter-spacing:.02em;border-bottom:1px solid var(--line);white-space:nowrap}
-thead th:first-child{text-align:left}
-tbody td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line2);
+tbody td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line2);
   font-variant-numeric:tabular-nums;color:var(--ink)}
 tbody td:first-child{text-align:left;font-weight:700}
 tbody tr:last-child td{border-bottom:none}
 tbody tr.total td{background:var(--paper);font-weight:800;border-top:2px solid var(--line)}
-.meter{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end}
+.meter{display:inline-flex;align-items:center;gap:8px;justify-content:flex-start}
 .meter .track{width:52px;height:7px;border-radius:4px;background:var(--chip);overflow:hidden}
 .meter .fill{height:100%;border-radius:4px}
 .tag{font-family:var(--mono);font-size:10px;color:var(--ink3);background:var(--chip);
@@ -338,8 +337,8 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="ctext">4개 유형 모두 <b>K·LK 큰 사이즈가 없다.</b> 3P는 큰 사이즈가 냉감 매출의 13~72%를 차지 — 듀라론은 3P의 K 하나(82.7백만)가 PB 전체(85.1백만)와 맞먹는다.</div>
       </div></div>
       <div class="cause"><div class="cn">3</div><div>
-        <div class="ctitle">사계절 낙폭 — 여름을 못 버팀</div>
-        <div class="ctext">사계절 옵션 봄(2~4월)→여름(5~7월) 평균: <b>PB −61~66% 급락</b>(60수·알러지) vs <b>3P는 유지·상승</b>(60수 −20%, 알러지 +73%). PB 사계절은 여름 수요를 받지 못한다.</div>
+        <div class="ctitle">여름시즌 사계절 매출 격차</div>
+        <div class="ctext">1~7월 사계절 옵션 매출 중 <b>5~7월 발생 비중이 3P는 41%</b>(60수 38%·알러지 60%)인데 반해 <b>PB는 24%</b>(60수 26%·알러지 22%)로 현저히 낮다 — 여름시즌 사계절 하락폭이 3P보다 월등히 크다.</div>
       </div></div>
     </div>
 
@@ -393,7 +392,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">추가옵션 구매율 3.5% (78÷세트 2,245) · 평균 AOV 68,823원 · 패드포함 구매(세트+추가) 47%</div>
       </div>
     </div>
-    <div class="takeaway"><b>알러지케어 — 상품별 갭.</b> ① <b>세트 구성 = AOV 차이</b>: PB 단품 위주 평균 AOV 4.8만원 vs 3P 세트 6.9만원(+44%) ② <b>패드를 파는 방식</b>: 3P는 패드를 세트에 묶어 <b>패드포함 구매 47%</b>(패드세트 44%+추가 3.5%), PB는 추가옵션로만 9.8% ③ <b>컬러</b>: 3P는 블루레이크 1색 56% 집중 vs PB는 8색 분산(최다 크림 31%) ④ <b>사이즈</b>: 3P K 17%·40.0백만, PB는 SS·Q뿐. (사계절 낙폭은 공통 이슈 ③ 참조)</div>
+    <div class="takeaway"><b>알러지케어 — 상품별 갭.</b> ① <b>세트 구성 = AOV 차이</b>: PB 단품 위주 평균 AOV 4.8만원 vs 3P 세트 6.9만원(+44%) ② <b>패드를 파는 방식</b>: 3P는 패드를 세트에 묶어 <b>패드포함 구매 47%</b>(패드세트 44%+추가 3.5%), PB는 추가옵션로만 9.8% ③ <b>컬러</b>: 3P는 블루레이크 1색 56% 집중 vs PB는 8색 분산(최다 크림 31%) ④ <b>사이즈</b>: 3P K 17%·40.0백만, PB는 SS·Q뿐. (여름철 사계절 매출 격차는 공통 이슈 ③ 참조)</div>
 
     <!-- B. 60수 -->
     <div class="sub-h"><span class="lch">B</span>60수 침구세트 <span class="codes">PB 3640123 ↔ 3P 676405 베이직톤</span></div>
@@ -439,7 +438,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
         <div class="mini-note">큰 사이즈(Q/K겸용·LK·K패드) = 매출 72% · 호텔침구=화이트 58%</div>
       </div>
     </div>
-    <div class="takeaway"><b>60수 — 상품별 갭.</b> ① <b>컬러</b>: 호텔침구의 본질은 화이트 — 3P 화이트 58% vs <b>PB 화이트 3%</b>(PB 1위는 민트 29%) ② <b>세트 구성</b>: PB 단품 93% vs 3P 이불+베개 세트 77% + 추가 냉감패드 23% ③ <b>사이즈</b>: 3P는 Q/K겸용·LK·K패드가 매출 72%, PB는 SS에 76% 쏠림. (사계절 낙폭 −61% vs −20%는 공통 이슈 ③ 참조)</div>
+    <div class="takeaway"><b>60수 — 상품별 갭.</b> ① <b>컬러</b>: 호텔침구의 본질은 화이트 — 3P 화이트 58% vs <b>PB 화이트 3%</b>(PB 1위는 민트 29%) ② <b>세트 구성</b>: PB 단품 93% vs 3P 이불+베개 세트 77% + 추가 냉감패드 23% ③ <b>사이즈</b>: 3P는 Q/K겸용·LK·K패드가 매출 72%, PB는 SS에 76% 쏠림. (여름철 사계절 매출 격차는 공통 이슈 ③ 참조)</div>
 
     <!-- C. 시어서커 -->
     <div class="sub-h"><span class="lch">C</span>시어서커 <span class="codes">PB 4037745 ↔ 3P 117560 디어썸머</span></div>

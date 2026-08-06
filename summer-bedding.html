@@ -135,6 +135,9 @@ svg text{font-family:var(--sans)}
 .ilist li .amt{font-weight:800;white-space:nowrap}
 .amt.p{color:var(--up)} .amt.n{color:var(--down)}
 .ilist li .pct{font-size:10.5px;color:var(--ink3);font-weight:700;margin-left:6px}
+.nb{font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:5px}
+.nb.new{color:#fff;background:var(--accent)}
+.nb.add{color:var(--ink2);background:var(--chip);border:1px solid var(--line)}
 
 /* table */
 .tbl-scroll{overflow-x:auto;margin-top:6px;border:1px solid var(--line);border-radius:12px}
@@ -285,7 +288,7 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
     <div class="grid3">
       <div class="drv new">
         <h3>신규 코드 <span class="tag">25년 0원</span></h3>
-        <div class="cap">성장 견인 · 25년엔 없던 상품</div>
+        <div class="cap">신설=26년 신설 코드 · 옵션추가=기존 코드에 여름옵션 추가</div>
         <div class="sum new tnum">+18.6억</div>
         <ul class="ilist" id="d-new"></ul>
       </div>
@@ -406,39 +409,45 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
       <div>
         <div class="mini-cap">PB 냉감 옵션 분해 (16.5백만 · 288개)</div>
         <div class="tbl-scroll"><table class="mini">
-          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <thead><tr><th>구분</th><th>항목</th><th>매출액(백만)</th><th>판매수량</th><th>수량비</th></tr></thead>
           <tbody>
             <tr><td rowspan="2">사이즈</td><td>SS</td><td>11.0</td><td>220</td><td>76%</td></tr>
             <tr><td>Q</td><td>5.5</td><td>68</td><td>24%</td></tr>
             <tr><td rowspan="2">구성</td><td>이불 단품</td><td>15.7</td><td>269</td><td>93%</td></tr>
-            <tr><td>추가 패드/커버</td><td>0.8</td><td>19</td><td>7%</td></tr>
-            <tr><td rowspan="3">색상 TOP</td><td>민트/세이지</td><td>4.7</td><td>83</td><td>29%</td></tr>
-            <tr><td>아이보리</td><td>2.5</td><td>42</td><td>15%</td></tr>
-            <tr><td>화이트</td><td>0.4</td><td>10</td><td>3%</td></tr>
+            <tr><td>추가: 듀라론 패드</td><td>0.8</td><td>19</td><td>7%</td></tr>
+            <tr><td rowspan="8">색상 (본품 8종)</td><td>솔리드 민트</td><td>4.7</td><td>83</td><td>31%</td></tr>
+            <tr><td>솔리드 아이보리</td><td>2.5</td><td>42</td><td>16%</td></tr>
+            <tr><td>솔리드 아이스블루</td><td>2.5</td><td>43</td><td>16%</td></tr>
+            <tr><td>네이비 스트라이프</td><td>1.9</td><td>32</td><td>12%</td></tr>
+            <tr><td>베이지 스트라이프</td><td>1.4</td><td>21</td><td>8%</td></tr>
+            <tr><td>솔리드 오트밀</td><td>1.3</td><td>22</td><td>8%</td></tr>
+            <tr><td>리틀도트 레드</td><td>0.7</td><td>14</td><td>5%</td></tr>
+            <tr><td>리틀도트 블루</td><td>0.7</td><td>12</td><td>4%</td></tr>
           </tbody>
         </table></div>
-        <div class="mini-note">K/LK 없음 · 단품 93% · 화이트 3%</div>
+        <div class="mini-note">추가옵션(듀라론 패드) 구매율 7.1% (19÷본품 269) · 평균 AOV 57,348원 · K/LK 없음</div>
       </div>
       <div>
         <div class="mini-cap">3P 냉감 옵션 분해 (260.5백만 · 2,865개)</div>
         <div class="tbl-scroll"><table class="mini">
-          <thead><tr><th>구분</th><th>항목</th><th>매출(백만)</th><th>수량</th><th>수량비</th></tr></thead>
+          <thead><tr><th>구분</th><th>항목</th><th>매출액(백만)</th><th>판매수량</th><th>수량비</th></tr></thead>
           <tbody>
-            <tr><td rowspan="4">사이즈</td><td>Q/K겸용</td><td>90.2</td><td>830</td><td>29%</td></tr>
-            <tr><td>SS</td><td>72.9</td><td>1,099</td><td>38%</td></tr>
-            <tr><td><b>LK</b></td><td><b>74.2</b></td><td>621</td><td>22%</td></tr>
+            <tr><td rowspan="4">사이즈</td><td>SS</td><td>72.9</td><td>1,099</td><td>38%</td></tr>
+            <tr><td>Q/K겸용</td><td>90.2</td><td>830</td><td>29%</td></tr>
+            <tr><td>LK</td><td>74.2</td><td>621</td><td>22%</td></tr>
             <tr><td>패드 Q·K</td><td>23.2</td><td>315</td><td>11%</td></tr>
-            <tr><td rowspan="2">구성</td><td><b>이불+베개 세트</b></td><td><b>212.4</b></td><td>2,208</td><td>77%</td></tr>
-            <tr><td>추가 냉감패드</td><td>48.1</td><td>657</td><td>23%</td></tr>
-            <tr><td rowspan="3">색상 TOP</td><td><b>화이트</b></td><td><b>150.1</b></td><td>1,657</td><td><b>58%</b></td></tr>
+            <tr><td rowspan="2">구성</td><td>이불+베개 세트</td><td>212.4</td><td>2,208</td><td>77%</td></tr>
+            <tr><td>추가: 냉감패드 (SS~LK)</td><td>48.1</td><td>657</td><td>23%</td></tr>
+            <tr><td rowspan="4">색상 (전체 4종)</td><td>화이트</td><td>150.1</td><td>1,657</td><td>58%</td></tr>
             <tr><td>베이지</td><td>52.2</td><td>562</td><td>20%</td></tr>
             <tr><td>블루/네이비</td><td>30.8</td><td>336</td><td>12%</td></tr>
+            <tr><td>그레이</td><td>27.4</td><td>310</td><td>11%</td></tr>
           </tbody>
         </table></div>
-        <div class="mini-note">큰 사이즈(Q/K겸용·LK·K패드) = 매출 72% · 호텔침구=화이트 58%</div>
+        <div class="mini-note">추가옵션(냉감패드) 구매율 29.8% (657÷세트 2,208) · 평균 AOV 90,921원 · 큰 사이즈(Q/K겸용·LK·K패드) = 매출 72%</div>
       </div>
     </div>
-    <div class="takeaway"><b>60수 — 상품별 갭.</b> ① <b>컬러</b>: 호텔침구의 본질은 화이트 — 3P 화이트 58% vs <b>PB 화이트 3%</b>(PB 1위는 민트 29%) ② <b>세트 구성</b>: PB 단품 93% vs 3P 이불+베개 세트 77% + 추가 냉감패드 23% ③ <b>사이즈</b>: 3P는 Q/K겸용·LK·K패드가 매출 72%, PB는 SS에 76% 쏠림. (여름철 사계절 매출 격차는 공통 이슈 ③ 참조)</div>
+    <div class="takeaway"><b>60수 — 상품별 갭.</b> ① <b>세트+큰 사이즈 = AOV 차이</b>: PB 단품·SS 위주 AOV 5.7만원 vs 3P 세트·LK 9.1만원(+59%) ② <b>컬러</b>: 호텔침구의 본질은 화이트 — 3P 화이트 58% vs <b>PB 본품엔 화이트 자체가 없음</b>(1위 민트 31%) ③ <b>패드 부착률</b>: 3P는 추가옵션 냉감패드 구매율 29.8%로 패드 수요를 흡수, PB는 7.1% ④ <b>사이즈</b>: 3P는 Q/K겸용·LK·K패드가 매출 72%, PB는 SS에 76% 쏠림. (여름철 사계절 매출 격차는 공통 이슈 ③ 참조)</div>
 
     <!-- C. 시어서커 -->
     <div class="sub-h"><span class="lch">C</span>시어서커 <span class="codes">PB 4037745 ↔ 3P 117560 디어썸머</span></div>
@@ -670,12 +679,12 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
 
   // 3. drivers
   const dnew=[
-    {c:'767440',n:'카스테라 워싱 옥수수솜 냉감',v:'+5.84억'},
-    {c:'3091712',n:'옥수수솜 클래식스트라이프',v:'+3.65억'},
-    {c:'3640258',n:'슬로우모닝 통풍냉감',v:'+2.79억'},
-    {c:'2731307',n:'마이호텔 60수 옥수수솜',v:'+1.37억'},
-    {c:'3995353',n:'블랙 듀라론 아이스 트레이 패드',v:'+1.12억'},
-    {c:'4037734',n:'refine 듀라론 여름냉감 패드',v:'+0.85억'}
+    {c:'767440',n:'카스테라 워싱 옥수수솜 냉감',v:'+5.84억',t:'옵션추가'},
+    {c:'3091712',n:'옥수수솜 클래식스트라이프',v:'+3.65억',t:'옵션추가'},
+    {c:'3640258',n:'슬로우모닝 통풍냉감',v:'+2.79억',t:'옵션추가'},
+    {c:'2731307',n:'마이호텔 60수 옥수수솜',v:'+1.37억',t:'옵션추가'},
+    {c:'3995353',n:'블랙 듀라론 아이스 트레이 패드',v:'+1.12억',t:'신설'},
+    {c:'4037734',n:'refine 듀라론 여름냉감 패드',v:'+0.85억',t:'신설'}
   ];
   const dgrow=[
     {c:'2636441',n:'유어메이트 워싱 차렵',v:'+2.16억',p:'95%'},
@@ -697,7 +706,8 @@ table.mini tbody tr td:first-child:not([rowspan]){text-align:left;font-weight:60
     arr.forEach(x=>{
       const li=document.createElement('li');
       const pct=x.p?`<span class="pct">${x.p}</span>`:'';
-      li.innerHTML=`<span class="nm"><span class="code">${x.c}</span>${x.n}</span>
+      const badge=x.t?`<span class="nb ${x.t==='신설'?'new':'add'}">${x.t}</span>`:'';
+      li.innerHTML=`<span class="nm">${badge}<span class="code">${x.c}</span>${x.n}</span>
         <span><span class="amt ${cls}">${x.v}</span>${pct}</span>`;
       ul.appendChild(li);
     });

@@ -166,7 +166,10 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .wkbar .vs{color:var(--muted);font-size:12.5px}
 .wkbar b{font-variant-numeric:tabular-nums}
 .wkwrap{overflow-x:auto}
-table.wk{width:100%;min-width:880px;border-collapse:collapse;font-size:13px;margin-top:10px}
+.wkbtn{appearance:none;border:1px solid var(--border);background:var(--surface);color:var(--ink2);
+  padding:5px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px}
+.wkbtn:hover{border-color:var(--pb);color:var(--pb)}
+table.wk{width:100%;min-width:1180px;border-collapse:collapse;font-size:13px;margin-top:10px}
 table.wk th{text-align:right;font-weight:600;color:var(--muted);font-size:11.5px;
   padding:0 10px 7px;border-bottom:1px solid var(--border);white-space:nowrap}
 table.wk th.l,table.wk td.l{text-align:left}
@@ -176,7 +179,9 @@ table.wk tr.pb td{background:color-mix(in srgb,var(--pb) 5%,transparent)}
 table.wk td.who{max-width:250px;overflow:hidden;text-overflow:ellipsis}
 .tag{display:inline-block;font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:1px 5px;margin-right:6px}
 .tag.pb{background:var(--pb)} .tag.cp{background:var(--comp)}
-.wv{font-variant-numeric:tabular-nums;font-weight:600}
+.wv{font-variant-numeric:tabular-nums;font-weight:650}
+.wprev{font-variant-numeric:tabular-nums;color:var(--ink2);font-weight:400}
+.warr{color:var(--muted);margin:0 4px;font-size:11px}
 .wd{display:block;font-size:11px;font-variant-numeric:tabular-nums;margin-top:2px}
 .wd.up{color:var(--good)} .wd.down{color:var(--bad)} .wd.flat{color:var(--muted)}
 .wdrv{font-size:12px;text-align:left}
@@ -592,7 +597,9 @@ function wkChip(a,b){
   const cls = Math.abs(r)<0.005?'flat':(r>0?'up':'down');
   return `<span class="wd ${cls}">${r>0?'+':''}${(r*100).toFixed(1)}%</span>`;
 }
-const wkCell = (c,p,fmt,sep) => `<td class="${sep?'wsep':''}"><span class="wv">${fmt(c)}</span>${wkChip(c,p)}</td>`;
+// 두 주의 실적을 한 칸에: 기준주 → 비교주, 그 아래 증감률
+const wkCell = (c,p,fmt,sep) => `<td class="${sep?'wsep':''}">`+
+  `<span class="wprev">${fmt(p)}</span><span class="warr">→</span><span class="wv">${fmt(c)}</span>${wkChip(c,p)}</td>`;
 
 // 매출 = 임프 × CTR × CVR × 객단가 (정확한 항등식) → 로그분해로 변화 주도 요인 추출.
 // 주도 요인 하나만 보이면 반대로 움직인 항목이 가려지므로, 상쇄 요인도 같이 돌려준다.
@@ -614,8 +621,10 @@ const drvTxt = d => `${d.k} ${d.v>0?'▲':'▼'} ${Math.abs((d.a/d.b-1)*100).toF
 function renderWeekly(){
   const el=$('#viewWeekly');
   if(WEEKS.length<2){ el.innerHTML='<div class="card">완결된 주가 2개 미만이라 비교할 수 없습니다.</div>'; return; }
-  if(!(ST.wkIdx>=1 && ST.wkIdx<WEEKS.length)) ST.wkIdx=WEEKS.length-1;
-  const cw=WEEKS[ST.wkIdx], pw=WEEKS[ST.wkIdx-1];
+  if(!(ST.wkIdx>=0 && ST.wkIdx<WEEKS.length)) ST.wkIdx=WEEKS.length-1;      // 비교주(뒤)
+  if(!(ST.wkBase>=0 && ST.wkBase<WEEKS.length)) ST.wkBase=ST.wkIdx-1;        // 기준주(앞)
+  if(ST.wkBase===ST.wkIdx) ST.wkBase = ST.wkIdx>0 ? ST.wkIdx-1 : ST.wkIdx+1;
+  const cw=WEEKS[ST.wkIdx], pw=WEEKS[ST.wkBase];
 
   const rows=[];
   for(const g of D.groups){
@@ -661,13 +670,18 @@ function renderWeekly(){
   el.innerHTML=`
     <div class="card">
       <div class="wkhead">
-        <h2>주간 비교 · 직전주 vs 2주 전</h2>
-        <div class="wksub">월~일 완결주 기준. 진행 중인 주는 제외됩니다. 각 칸의 큰 숫자가 <b>비교주</b> 값, 아래가 <b>기준주 대비 증감</b>입니다.</div>
+        <h2>주간 비교 · ${wkLabel(pw)} 주간 vs ${wkLabel(cw)} 주간</h2>
+        <div class="wksub">월~일 완결주 기준(진행 중인 주 제외). 각 칸은 <b>기준주 → 비교주</b> 실적을 나란히 보여주고, 그 아래가 증감률입니다.</div>
       </div>
       <div class="wkbar">
+        <span class="ctl-label">기준주</span>
+        <select id="wkBaseSel">${WEEKS.map((w,i)=>`<option value="${i}" ${i===ST.wkBase?'selected':''}>${wkLabel(w)}</option>`).join('')}</select>
+        <span class="warr" style="font-size:14px">→</span>
         <span class="ctl-label">비교주</span>
-        <select id="wkSel">${WEEKS.map((w,i)=>i>=1?`<option value="${i}" ${i===ST.wkIdx?'selected':''}>${wkLabel(w)}</option>`:'').join('')}</select>
-        <span class="vs">기준주 <b>${wkLabel(pw)}</b> 대비 &nbsp;·&nbsp; 퍼널 순서: 임프레션 → CTR → 유입 → CVR → 주문 → 매출</span>
+        <select id="wkSel">${WEEKS.map((w,i)=>`<option value="${i}" ${i===ST.wkIdx?'selected':''}>${wkLabel(w)}</option>`).join('')}</select>
+        <button id="wkPrev" class="wkbtn">◀ 한 주 앞으로</button>
+        <button id="wkNext" class="wkbtn">한 주 뒤로 ▶</button>
+        <span class="vs">퍼널 순서: 임프레션 → CTR → 유입 → CVR → 주문 → 매출</span>
       </div>
       <div class="wkwrap"><table class="wk">
         <thead><tr>
@@ -679,7 +693,17 @@ function renderWeekly(){
       <div class="fnote">‘변화 주도 요인’은 <b>매출 = 임프레션 × CTR × CVR × 객단가</b> 항등식을 로그 분해해, 이번 주 매출 변화에 가장 크게 기여한 항목을 자동으로 고른 것입니다.
       임프레션이 주도 = 노출 자체가 늘거나 줄어든 것(랭킹·광고·스오딜), CTR이 주도 = 노출은 됐는데 클릭이 변한 것(썸네일·가격·리뷰), CVR이 주도 = 유입은 됐는데 구매가 변한 것(PDP·품절·가격).</div>
     </div>`;
-  $('#wkSel').onchange = e => { ST.wkIdx=+e.target.value; renderWeekly(); };
+  $('#wkSel').onchange     = e => { ST.wkIdx =+e.target.value; renderWeekly(); };
+  $('#wkBaseSel').onchange = e => { ST.wkBase=+e.target.value; renderWeekly(); };
+  // 두 주를 붙인 채로 같이 이동 (간격은 유지)
+  const shift = n => {
+    const gap = ST.wkIdx-ST.wkBase;
+    const ni = ST.wkIdx+n, nb = ni-gap;
+    if(ni<0||ni>=WEEKS.length||nb<0||nb>=WEEKS.length) return;
+    ST.wkIdx=ni; ST.wkBase=nb; renderWeekly();
+  };
+  $('#wkPrev').onclick = ()=>shift(-1);
+  $('#wkNext').onclick = ()=>shift(1);
 }
 
 function renderDetail(){

@@ -157,6 +157,31 @@ svg{display:block;width:100%;height:auto;overflow:visible}
   display:inline-flex;align-items:center;gap:5px}
 .pchip .dot{width:8px;height:8px;border-radius:50%}
 .pchip .pd{color:var(--muted)}
+
+/* ---- 주간 비교 ---- */
+.wkhead h2{font-size:17px;margin-bottom:3px}
+.wksub{font-size:12.5px;color:var(--muted)}
+.wkbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:14px 0 6px;
+  padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px}
+.wkbar .vs{color:var(--muted);font-size:12.5px}
+.wkbar b{font-variant-numeric:tabular-nums}
+.wkwrap{overflow-x:auto}
+table.wk{width:100%;min-width:880px;border-collapse:collapse;font-size:13px;margin-top:10px}
+table.wk th{text-align:right;font-weight:600;color:var(--muted);font-size:11.5px;
+  padding:0 10px 7px;border-bottom:1px solid var(--border);white-space:nowrap}
+table.wk th.l,table.wk td.l{text-align:left}
+table.wk td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;vertical-align:top}
+table.wk tr.grp td{background:var(--surface2);font-weight:650;font-size:12px;color:var(--ink2);padding:6px 10px}
+table.wk tr.pb td{background:color-mix(in srgb,var(--pb) 5%,transparent)}
+table.wk td.who{max-width:250px;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:1px 5px;margin-right:6px}
+.tag.pb{background:var(--pb)} .tag.cp{background:var(--comp)}
+.wv{font-variant-numeric:tabular-nums;font-weight:600}
+.wd{display:block;font-size:11px;font-variant-numeric:tabular-nums;margin-top:2px}
+.wd.up{color:var(--good)} .wd.down{color:var(--bad)} .wd.flat{color:var(--muted)}
+.wdrv{font-size:12px;text-align:left}
+.wdrv .co{display:block;color:var(--muted);font-size:10.5px;margin-top:2px}
+.wsep{border-left:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -183,6 +208,7 @@ svg{display:block;width:100%;height:auto;overflow:visible}
     <div class="kpigrid" id="kpigrid"></div>
     <div class="catov" id="catOverview"></div>
   </div>
+  <div id="viewWeekly" style="display:none"></div>
   <div id="viewDetail" class="card" style="display:none"></div>
 
   <div class="foot" id="foot"></div>
@@ -453,11 +479,14 @@ function renderControls(){
 }
 
 /* ---------- nav / views ---------- */
+const NAMED_VIEWS = ['summary','weekly'];
 function renderNav(){
-  const items=[['summary','전체 요약'], ...D.groups.map((g,gi)=>[gi,`${g.id} · ${nm(g.mine).short}`])];
+  const items=[['summary','전체 요약'],['weekly','주간 비교'], ...D.groups.map((g,gi)=>[gi,`${g.id} · ${nm(g.mine).short}`])];
   $('#nav').innerHTML=items.map(([v,l])=>`<button data-v="${v}" class="${String(ST.view)===String(v)?'on':''}">${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{
-    const v=b.dataset.v; ST.view = v==='summary'?'summary':+v; if(v!=='summary')ST.groupIdx=+v; renderAll();});
+    const v=b.dataset.v;
+    if(NAMED_VIEWS.includes(v)) ST.view=v; else { ST.view=+v; ST.groupIdx=+v; }
+    renderAll();});
 }
 
 // shared period-total strip (선택 기간 합산 매출). used by 전체요약 + 그룹상세.
@@ -540,6 +569,117 @@ function renderCatOverview(){
     const cid=div.dataset.cid; const s=catSeries(cid,start,end,ST.gran);
     lineChart(div,[{name:D.category[cid],color:'#1baf7a',pts:s.map(b=>({label:b.label,v:b.gmv}))}],'gmv');
   });
+}
+
+/* ---------- 주간 비교 (월~일 완결주, 직전주 vs 2주전) ---------- */
+const cnt = v => { v=Math.round(v||0);
+  return Math.abs(v)>=1e4 ? (v/1e4).toFixed(Math.abs(v)>=1e6?0:1)+'만' : v.toLocaleString(); };
+
+// 데이터 구간에 완전히 들어오는 월~일 주만 (진행 중인 주 제외)
+function completeWeeks(){
+  const out=[]; let m=mondayOf(DMIN);
+  if(iso(m)<D.dateRange.start) m=addDays(m,7);
+  for(;;){ const s=iso(m), e=iso(addDays(m,6)); if(e>D.dateRange.end) break; out.push({s,e}); m=addDays(m,7); }
+  return out;
+}
+const WEEKS = completeWeeks();
+const wkLabel = w => `${w.s.slice(5).replace('-','/')}~${w.e.slice(5).replace('-','/')}`;
+const relCh = (a,b) => (b && isFinite(a/b)) ? (a-b)/b : null;
+
+function wkChip(a,b){
+  const r=relCh(a,b);
+  if(r==null) return '<span class="wd flat">–</span>';
+  const cls = Math.abs(r)<0.005?'flat':(r>0?'up':'down');
+  return `<span class="wd ${cls}">${r>0?'+':''}${(r*100).toFixed(1)}%</span>`;
+}
+const wkCell = (c,p,fmt,sep) => `<td class="${sep?'wsep':''}"><span class="wv">${fmt(c)}</span>${wkChip(c,p)}</td>`;
+
+// 매출 = 임프 × CTR × CVR × 객단가 (정확한 항등식) → 로그분해로 변화 주도 요인 추출.
+// 주도 요인 하나만 보이면 반대로 움직인 항목이 가려지므로, 상쇄 요인도 같이 돌려준다.
+function wkDriver(c,p){
+  if(!(c.gmv>0 && p.gmv>0)) return null;
+  const f=(a,b)=>(a>0&&b>0)?Math.log(a/b):0;
+  const parts=[{k:'임프레션',v:f(c.imp,p.imp),a:c.imp,b:p.imp},
+               {k:'CTR',   v:f(c.ctr,p.ctr),a:c.ctr,b:p.ctr},
+               {k:'CVR',   v:f(c.cvr,p.cvr),a:c.cvr,b:p.cvr},
+               {k:'객단가', v:f(c.aov,p.aov),a:c.aov,b:p.aov}];
+  parts.sort((x,y)=>Math.abs(y.v)-Math.abs(x.v));
+  const top=parts[0];
+  if(!top || Math.abs(top.v)<0.01) return null;
+  const opp=parts.find(x=>x!==top && x.v!==0 && Math.sign(x.v)!==Math.sign(top.v) && Math.abs(x.v)>=0.05);
+  return {top,opp};
+}
+const drvTxt = d => `${d.k} ${d.v>0?'▲':'▼'} ${Math.abs((d.a/d.b-1)*100).toFixed(1)}%`;
+
+function renderWeekly(){
+  const el=$('#viewWeekly');
+  if(WEEKS.length<2){ el.innerHTML='<div class="card">완결된 주가 2개 미만이라 비교할 수 없습니다.</div>'; return; }
+  if(!(ST.wkIdx>=1 && ST.wkIdx<WEEKS.length)) ST.wkIdx=WEEKS.length-1;
+  const cw=WEEKS[ST.wkIdx], pw=WEEKS[ST.wkIdx-1];
+
+  const rows=[];
+  for(const g of D.groups){
+    const pbC=sumRange(g.mine,cw.s,cw.e), pbP=sumRange(g.mine,pw.s,pw.e);
+    const cpC=sumRangeMulti(g.comps,cw.s,cw.e), cpP=sumRangeMulti(g.comps,pw.s,pw.e);
+    const pbR=relCh(pbC.gmv,pbP.gmv), cpR=relCh(cpC.gmv,cpP.gmv);
+    const together = pbR!=null && cpR!=null && Math.sign(pbR)===Math.sign(cpR)
+                     && Math.abs(cpR)>=0.03 && Math.abs(pbR)>=0.03;
+
+    rows.push(`<tr class="grp"><td colspan="8" class="l">그룹 ${g.id}
+      <span style="font-weight:400;color:var(--muted)"> · 경쟁 대비 매출 지수 ${idxPct(pbC.gmv,cpC.gmv)}</span></td></tr>`);
+
+    const line=(pid,c,p,isPB,label)=>{
+      const d=wkDriver(c,p);
+      const drv = d ? `<b class="${d.top.v>0?'wd up':'wd down'}" style="display:inline;font-size:12px">${drvTxt(d.top)}</b>` : '<span style="color:var(--muted)">변화 미미</span>';
+      const notes=[];
+      if(d && d.opp) notes.push(`단 <b>${drvTxt(d.opp)}</b>가 상쇄`);
+      if(isPB && together) notes.push('경쟁도 같은 방향 (시즌성 가능)');
+      else if(isPB && pbR!=null && cpR!=null && Math.sign(pbR)!==Math.sign(cpR)) notes.push('경쟁과 반대 방향');
+      if(c.orders<30 || p.orders<30) notes.push('표본 적음 (주문 30건 미만) — 증감률 해석 주의');
+      const co = notes.map(n=>`<span class="co">${n}</span>`).join('');
+      return `<tr class="${isPB?'pb':''}">
+        <td class="l who" title="${label.replace(/"/g,'&quot;')}"><span class="tag ${isPB?'pb':'cp'}">${isPB?'PB':'경쟁'}</span>${label}</td>
+        ${wkCell(c.imp,p.imp,cnt)}
+        ${wkCell(c.ctr,p.ctr,pct)}
+        ${wkCell(c.clk,p.clk,cnt)}
+        ${wkCell(c.cvr,p.cvr,pct)}
+        ${wkCell(c.orders,p.orders,cnt)}
+        ${wkCell(c.gmv,p.gmv,v=>'₩'+won(v),true)}
+        <td class="wdrv l">${drv}${co}</td></tr>`;
+    };
+    rows.push(line(g.mine,pbC,pbP,true,nm(g.mine).short));
+    if(g.comps.length>1){
+      rows.push(line(null,cpC,cpP,false,`${g.comps.length}종 합계`));
+      for(const cp of g.comps){
+        rows.push(line(cp,sumRange(cp,cw.s,cw.e),sumRange(cp,pw.s,pw.e),false,'└ '+nm(cp).short));
+      }
+    } else {
+      rows.push(line(g.comps[0],cpC,cpP,false,nm(g.comps[0]).short));
+    }
+  }
+
+  el.innerHTML=`
+    <div class="card">
+      <div class="wkhead">
+        <h2>주간 비교 · 직전주 vs 2주 전</h2>
+        <div class="wksub">월~일 완결주 기준. 진행 중인 주는 제외됩니다. 각 칸의 큰 숫자가 <b>비교주</b> 값, 아래가 <b>기준주 대비 증감</b>입니다.</div>
+      </div>
+      <div class="wkbar">
+        <span class="ctl-label">비교주</span>
+        <select id="wkSel">${WEEKS.map((w,i)=>i>=1?`<option value="${i}" ${i===ST.wkIdx?'selected':''}>${wkLabel(w)}</option>`:'').join('')}</select>
+        <span class="vs">기준주 <b>${wkLabel(pw)}</b> 대비 &nbsp;·&nbsp; 퍼널 순서: 임프레션 → CTR → 유입 → CVR → 주문 → 매출</span>
+      </div>
+      <div class="wkwrap"><table class="wk">
+        <thead><tr>
+          <th class="l">상품</th><th>임프레션</th><th>CTR</th><th>유입(PDP)</th>
+          <th>CVR</th><th>주문</th><th class="wsep">매출</th><th class="l">변화 주도 요인</th>
+        </tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table></div>
+      <div class="fnote">‘변화 주도 요인’은 <b>매출 = 임프레션 × CTR × CVR × 객단가</b> 항등식을 로그 분해해, 이번 주 매출 변화에 가장 크게 기여한 항목을 자동으로 고른 것입니다.
+      임프레션이 주도 = 노출 자체가 늘거나 줄어든 것(랭킹·광고·스오딜), CTR이 주도 = 노출은 됐는데 클릭이 변한 것(썸네일·가격·리뷰), CVR이 주도 = 유입은 됐는데 구매가 변한 것(PDP·품절·가격).</div>
+    </div>`;
+  $('#wkSel').onchange = e => { ST.wkIdx=+e.target.value; renderWeekly(); };
 }
 
 function renderDetail(){
@@ -712,10 +852,15 @@ function renderMeta(){
 
 function renderAll(){
   renderNav(); renderControls(); renderMeta();
-  const summary = ST.view==='summary';
+  const summary = ST.view==='summary', weekly = ST.view==='weekly';
   $('#viewSummary').style.display = summary?'block':'none';
-  $('#viewDetail').style.display  = summary?'none':'block';
-  if(summary){ renderTotal(); renderKPI(); renderCatOverview(); } else renderDetail();
+  $('#viewWeekly').style.display  = weekly?'block':'none';
+  $('#viewDetail').style.display  = (summary||weekly)?'none':'block';
+  // 주간 비교는 자체 주차 선택기를 쓰므로 상단 기간 컨트롤은 숨긴다
+  $('.controls').style.display = weekly?'none':'flex';
+  if(summary){ renderTotal(); renderKPI(); renderCatOverview(); }
+  else if(weekly){ renderWeekly(); }
+  else renderDetail();
 }
 renderAll();
 </script>

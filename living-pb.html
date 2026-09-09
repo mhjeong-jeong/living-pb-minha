@@ -694,15 +694,15 @@ function renderTarget(){
     const cells = TGMONTHS.map(ym=>{
       const tgt=t[ym]; const act=gmvOfMonth(pid,ym); const pr=monthProgress(ym);
       if(tgt==null) return `<td class="tgcell"><span class="tgna">목표 없음</span>${act?`<span class="tgact">실적 ₩${won(act)}</span>`:''}</td>`;
-      // 진행 중인 월은 경과일만큼 깎은 일할 목표를 기준으로 삼는다
-      const paceTgt = pr.partial ? tgt*pr.elapsed/pr.total : tgt;
-      const r = act/paceTgt;
+      // 달성률은 항상 '월 전체 목표' 대비. 진행 중인 월은 경과일 기대치를 참고로 병기.
+      const r = act/tgt;
+      const expect = pr.elapsed/pr.total;   // 이 시점까지 채웠어야 할 비율
       return `<td class="tgcell">
         <span class="tgamt tnum">₩${won(act)}</span>
         <span class="tgbarwrap"><span class="tgbar" style="width:${Math.min(100,Math.max(0,r*100))}%"></span></span>
-        <span class="tgratio ${achClass(r)} tnum"><span class="rb">${pr.partial?'일할 ':''}목표비</span>${achTxt(r)} 달성</span>
+        <span class="tgratio ${pr.partial?'':achClass(r)} tnum"><span class="rb">목표비</span>${achTxt(r)} 달성</span>
         <span class="tgpace">${pr.partial
-          ? `${pr.elapsed}/${pr.total}일 · 일할목표 ₩${won(paceTgt)} (월 ₩${won(tgt)})`
+          ? `${pr.elapsed}/${pr.total}일 경과 · 이 시점 기대 ${achTxt(expect)} · 월 목표 ₩${won(tgt)}`
           : `월 목표 ₩${won(tgt)}`}</span>
       </td>`;
     }).join('');
@@ -717,11 +717,12 @@ function renderTarget(){
     for(const pid of pbs){ const t=(TG.byPid[pid]||{})[ym]; if(t!=null){ any=true; tgt+=t; act+=gmvOfMonth(pid,ym); } }
     if(!any) return `<td class="tgcell"><span class="tgna">–</span></td>`;
     const pr=monthProgress(ym);
-    const paceTgt = pr.partial ? tgt*pr.elapsed/pr.total : tgt;
-    const r = act/paceTgt;
+    const r = act/tgt;
     return `<td class="tgcell"><span class="tgamt tnum">₩${won(act)}</span>
-      <span class="tgratio ${achClass(r)} tnum"><span class="rb">${pr.partial?'일할 ':''}목표비</span>${achTxt(r)} 달성</span>
-      <span class="tgpace">${pr.partial?`일할목표 ₩${won(paceTgt)} (월 ₩${won(tgt)})`:`월 목표 ₩${won(tgt)}`}</span></td>`;
+      <span class="tgratio ${pr.partial?'':achClass(r)} tnum"><span class="rb">목표비</span>${achTxt(r)} 달성</span>
+      <span class="tgpace">${pr.partial
+        ? `${pr.elapsed}/${pr.total}일 경과 · 이 시점 기대 ${achTxt(pr.elapsed/pr.total)} · 월 목표 ₩${won(tgt)}`
+        : `월 목표 ₩${won(tgt)}`}</span></td>`;
   }).join('');
 
   const srcNote = TGMONTHS.map(ym=>`${ym.slice(5)}월 ${TG.monthSource[ym]||'-'}`).join(' · ');
@@ -729,9 +730,9 @@ function renderTarget(){
     <div class="card">
       <div class="wkhead">
         <h2>월별 목표 대비 실적</h2>
-        <div class="wksub">각 칸은 <b>그 달의 누적 매출</b>과 <b>목표비 달성률</b>입니다.
-          진행 중인 월은 월 전체 목표가 아니라 <b>경과일만큼 깎은 일할 목표</b>가 기준입니다
-          (예: 월 목표 1,500만 · 8/30일 경과 → 일할 목표 400만, 누적 253만이면 63%).
+        <div class="wksub">각 칸은 <b>그 달의 누적 매출</b>과 <b>월 전체 목표 대비 달성률</b>입니다
+          (예: 월 목표 1,500만 · 누적 253만 → 17%).
+          진행 중인 월은 아직 달이 안 끝났으므로 달성률에 색을 넣지 않고, 대신 <b>이 시점 기대치</b>(경과일 비율)를 같이 적었습니다.
           목표는 상품코드가 아니라 시트의 <b>모델(라인)</b> 단위라, 시트 하단 <code>상품코드 구분</code> 표로 매핑했습니다.</div>
       </div>
       <div class="wkwrap">
